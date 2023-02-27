@@ -43,6 +43,8 @@ class RegisterController extends BaseController
         $user = User::create($input);
         $success['token'] =  $user->createToken('MyApp')->plainTextToken;
         $success['email'] =  $user->email;
+        $user->user_type;
+        $success['user'] =  $user;
    
         return $this->sendResponse($success, 'User registered successfully.');
     }
@@ -58,6 +60,10 @@ class RegisterController extends BaseController
             $user = Auth::user(); 
             $success['token'] =  $user->createToken('MyApp')->plainTextToken; 
             $success['email'] =  $user->email;
+            $user->user_type;
+            $success['user'] =  $user;
+            // $success['user_type'] =  $user->user_type;
+
    
             return $this->sendResponse($success, 'User login successfull.');
         } 
