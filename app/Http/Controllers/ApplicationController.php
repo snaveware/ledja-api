@@ -41,7 +41,7 @@ class ApplicationController extends BaseController
             'user_id' => 'required',
             'status' => 'required',
             'cover_letter' => 'required',
-            'skills_assessment' => 'nullable',
+            // 'skills_assessment' => 'nullable',
         ]);
 
         if($validator->fails()){
@@ -49,10 +49,10 @@ class ApplicationController extends BaseController
         }
 
         $input = $request->all();
-        $path = $request->file('skills_assessment')->storeAs(
-            'completed_skills_assessment', $request->user()->id
-        );
-        $input['skills_assessment'] = $path;
+        // $path = $request->file('skills_assessment')->storeAs(
+        //     'completed_skills_assessment', $request->user()->id
+        // );
+        // $input['skills_assessment'] = $path;
         $application = Application::create($input);
 
         return $this->sendResponse($application, "Application Created Successfully" );

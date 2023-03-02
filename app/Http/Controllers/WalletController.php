@@ -17,7 +17,7 @@ class WalletController extends BaseController
      */
     public function index()
     {
-        $wallets = Wallet::with('user')->paginate();
+        $wallets = Wallet::with(['user', 'transactions'])->paginate();
         return $this->sendResponse($wallets, "Wallets Fetched Successfully");
     }
 
@@ -60,10 +60,9 @@ class WalletController extends BaseController
     public function show(string $id)
     {
         //
-        $wallets = Wallet::with('user')->find($id);
+        $wallets = Wallet::with(['user', 'transactions'])->find($id);
 
         return $this->sendResponse($wallets, "Wallet Found Successfully" );
-
 
 
     }

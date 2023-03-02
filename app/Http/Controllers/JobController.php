@@ -55,18 +55,18 @@ class JobController extends BaseController
             'with_resume' => 'required',
             'communication_preferences' => 'required',
             'apply_method' => 'required',
-            'skills_assessment' => 'nullable',
+            // 'skills_assessment' => 'nullable',
         ]);
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());       
         }
 
-        $path = $request->file('skills_assessment')->storeAs(
-            'skills_assessment_tests', $request->user()->id
-        );
+        // $path = $request->file('skills_assessment')->storeAs(
+        //     'skills_assessment_tests', $request->user()->id
+        // );
 
-        $input['skills_assessment'] = $path;
+        // $input['skills_assessment'] = $path;
 
 
         $input = $request->all();

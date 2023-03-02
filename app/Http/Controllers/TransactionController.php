@@ -17,7 +17,7 @@ class TransactionController extends BaseController
      */
     public function index()
     {
-        $transactions = Transaction::with('user')->paginate();
+        $transactions = Transaction::with(['user', 'wallet'])->paginate();
         return $this->sendResponse($transactions, "Transactions Fetched Successfully");
     }
 
@@ -38,6 +38,7 @@ class TransactionController extends BaseController
         // validate fields
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
+            'wallet_id' => 'required',
             'type' => 'required',
             'amount' => 'required',
         ]);
@@ -61,7 +62,7 @@ class TransactionController extends BaseController
     public function show(string $id)
     {
         //
-        $transaction = Transaction::with('user')->find($id);
+        $transaction = Transaction::with(['user', 'wallet'])->find($id);
 
         return $this->sendResponse($transaction, "Transaction Found Successfully" );
 

@@ -61,7 +61,7 @@ class Job extends Model
         'with_recommendation',
         'with_resume',
         'communication_preferences',
-        'skills_assessment',
+        // 'skills_assessment',
         'apply_method',
     ];
 

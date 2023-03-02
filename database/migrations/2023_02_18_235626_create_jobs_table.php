@@ -30,7 +30,7 @@ return new class extends Migration
             $table->boolean('with_recommendation');
             $table->boolean('with_resume');
             $table->string('communication_preferences');
-            $table->string('skills_assessment');
+            // $table->string('skills_assessment');
             $table->string('apply_method');
             $table->timestamps();
 
