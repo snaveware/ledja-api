@@ -78,7 +78,16 @@ class RegisterController extends BaseController
     public function show(string $id)
     {
         //
-        $user = User::with('user_type')->find($id);
+        $user = User::with(['user_type',
+                            'basic_info_jobseeker',
+                            'basic_info_recruiter',
+                            'job_seeker_link',
+                            'recruiter_link',
+                            'about_job_seeker',
+                            'about_recruiter',
+                            'more_about_recruiter',
+                            'upload_job',
+        ])->find($id);
 
         return $this->sendResponse($user, "User Found Successfully" );
 

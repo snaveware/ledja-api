@@ -25,4 +25,5 @@ class BasicInfoJobseeker extends Model
         'location',
         'avatar'
     ];
+
 }

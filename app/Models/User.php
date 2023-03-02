@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 
 class User extends Authenticatable
@@ -50,44 +51,44 @@ class User extends Authenticatable
         return $this->belongsTo(UserType::class);
     }
 
-    public function basic_info_jobseekers(): HasMany
+    public function basic_info_jobseeker(): HasOne
     {
-        return $this->hasMany(BasicInfoJobseeker::class);
+        return $this->hasOne(BasicInfoJobseeker::class);
     }
 
-    public function basic_info_recruiters(): HasMany
+    public function basic_info_recruiter(): HasOne
     {
-        return $this->hasMany(BasicInfoRecruiter::class);
+        return $this->hasOne(BasicInfoRecruiter::class);
     }
 
-    public function job_seeker_links(): HasMany
+    public function job_seeker_link(): HasOne
     {
-        return $this->hasMany(JobSeekerLink::class);
+        return $this->hasOne(JobSeekerLink::class);
     }
 
-    public function recruiter_links(): HasMany
+    public function recruiter_link(): HasOne
     {
-        return $this->hasMany(RecruiterLink::class);
+        return $this->hasOne(RecruiterLink::class);
     }
 
-    public function about_job_seekers(): HasMany
+    public function about_job_seeker(): HasOne
     {
-        return $this->hasMany(AboutJobSeeker::class);
+        return $this->hasOne(AboutJobSeeker::class);
     }
 
-    public function about_recruiters(): HasMany
+    public function about_recruiter(): HasOne
     {
-        return $this->hasMany(AboutRecruiter::class);
+        return $this->hasOne(AboutRecruiter::class);
     }
 
-    public function more_about_recruiters(): HasMany
+    public function more_about_recruiter(): HasOne
     {
-        return $this->hasMany(MoreAboutRecruiter::class);
+        return $this->hasOne(MoreAboutRecruiter::class);
     }
 
-    public function upload_jobs(): HasMany
+    public function upload_job(): HasOne
     {
-        return $this->hasMany(UploadJob::class);
+        return $this->hasOne(UploadJob::class);
     }
 
     public function jobs(): HasMany

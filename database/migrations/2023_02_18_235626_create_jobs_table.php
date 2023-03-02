@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('location');
             $table->string('description');
+            $table->string('salary');
+            $table->string('experience_level');
             $table->string('type');
             $table->integer('no_of_hires');
             $table->string('hiring_speed');

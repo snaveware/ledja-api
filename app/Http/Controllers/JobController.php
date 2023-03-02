@@ -45,6 +45,8 @@ class JobController extends BaseController
             'title' => 'required',
             'location' => 'required',
             'description' => 'required',
+            'salary' => 'required',
+            'experience_level' => 'required',
             'type' => 'required',
             'no_of_hires' => 'required',
             'hiring_speed' => 'required',
@@ -139,6 +141,67 @@ class JobController extends BaseController
 
 
         return $this->sendResponse([], $message );
+
+    }
+
+     /**
+     * Display the specified resource.
+     */
+    public function get_user_jobs(string $user_id)
+    {
+        //
+        $jobs = Job::with(['user','job_category'])->where('user_id', $user_id)->get();
+
+        return $this->sendResponse($jobs, "User Jobs Found Successfully" );
+
+
+
+    }
+
+
+     /**
+     * Store a newly created resource in storage.
+     */
+    public function filter_jobs(Request $request)
+    {
+        // validate fields
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'nullable',
+            'job_category_id' => 'nullable',
+            'job_status' => 'nullable',
+            'company_industry' => 'nullable',
+            'company_sub_industry' => 'nullable',
+            'title' => 'nullable',
+            'location' => 'nullable',
+            'description' => 'nullable',
+            'salary' => 'nullable',
+            'experience_level' => 'nullable',
+            'type' => 'nullable',
+            'skills_assessment' => 'nullable',
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());       
+        }
+
+        $input = $request->all();
+
+        // Filter jobs by field
+
+        $jobs = Job::type($input['type'])
+        ->salary($input['salary'])
+        ->title($input['title'])
+        ->experienceLevel($input['experience_level'])
+        ->type($input['type'])
+        ->datePosted($input['date_posted'])
+        ->get();
+        // $jobs = Job::ofSalary($input['salary'])
+        // ->ofLocation($input['location'])
+        // ->get();
+
+        return $this->sendResponse($jobs, "Jobs Fetched Successfully" );
+
+
 
     }
 }

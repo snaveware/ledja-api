@@ -12,6 +12,37 @@ class Job extends Model
 {
     use HasFactory;
 
+    public function scopeType($query, $type)
+    {
+        return $query->where('type', 'like', '%'.$type.'%');
+    }
+    public function scopeSalary($query, $salary)
+    {
+        return $query->where('salary', '>=', $salary);
+    }
+    public function scopeTitle($query, $title)
+    {
+        return $query->where('title', 'like', '%'.$title.'%');
+    }
+    public function scopeExperienceLevel($query, $experience_level)
+    {
+        return $query->where('experience_level', 'like', '%'.$experience_level.'%');
+    }
+    public function scopeDatePosted($query, $date_posted)
+    {
+        return $query->where('created_at', 'like', '%'.$date_posted.'%');
+    }
+    public function scopeLocation($query, $location)
+    {
+        return $query->where('location', 'like', '%'.$location.'%');
+    }
+    // public function scopeSalary($query, $salary)
+    // {
+    //     return $query->where('salary', 'like', '%'.$salary.'%');
+    // }
+   
+    
+
     protected $fillable = [
         'user_id',
         'job_category_id',
@@ -21,6 +52,8 @@ class Job extends Model
         'title',
         'location',
         'description',
+        'salary',
+        'experience_level',
         'type',
         'no_of_hires',
         'hiring_speed',
