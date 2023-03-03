@@ -101,9 +101,9 @@ class User extends Authenticatable
         return $this->hasMany(Application::class);
     }
 
-    public function wallets(): HasMany
+    public function wallet(): HasOne
     {
-        return $this->hasMany(Wallet::class);
+        return $this->hasOne(Wallet::class);
     }
 
     public function transactions(): HasMany

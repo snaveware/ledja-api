@@ -6,6 +6,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Transaction;
+use App\Models\User;
+use App\Models\Wallet;
 use Validator;
 use App\Http\Controllers\API\BaseController as BaseController;
 
@@ -33,12 +35,12 @@ class TransactionController extends BaseController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function transact(Request $request, string $user_id)
     {
         // validate fields
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
-            'wallet_id' => 'required',
+            // 'user_id' => 'required',
+            // 'wallet_id' => 'required',
             'type' => 'required',
             'amount' => 'required',
         ]);
@@ -48,7 +50,36 @@ class TransactionController extends BaseController
         }
 
         $input = $request->all();
+        $user = User::where('id', $user_id)->first();
+        // dd($user->wallet->id);
+        $wallet = Wallet::where('id', $user->wallet->id)->first();
+        $input['user_id'] = $user->id;
+        $input['wallet_id'] = $wallet->id;
         $transaction = Transaction::create($input);
+        // dd(($transaction->type == 'Debit' || $transaction->type == 'debit') &&  $wallet->amount >= $transaction->amount);
+
+        // edit wallet amount
+        if(($transaction->type == 'Debit' || $transaction->type == 'debit') && $wallet->amount >= $transaction->amount)
+        {
+            $wallet->amount = $wallet->amount - $transaction->amount;
+            $wallet->save();
+        }
+
+       
+        else if($transaction->type == 'Credit' || $transaction->type == 'credit')
+        {
+            $wallet->amount = $wallet->amount + $transaction->amount;
+            $wallet->save();
+        }
+
+        else
+        {
+            $transaction->delete();
+            return $this->sendResponse([], "Error! Money in the wallet is less than transacting money" );
+
+        }
+
+        $trans = $transaction->wallet;
 
         return $this->sendResponse($transaction, "Transaction Created Successfully" );
 

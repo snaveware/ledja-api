@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\Models\User;
+use App\Models\Wallet;
 
 
 class RegisterController extends BaseController
@@ -20,7 +21,17 @@ class RegisterController extends BaseController
 
      public function index()
     {
-        $users = User::with('user_type')->paginate();
+        $users = User::with(['user_type',
+                            'basic_info_jobseeker',
+                            'basic_info_recruiter',
+                            'job_seeker_link',
+                            'recruiter_link',
+                            'about_job_seeker',
+                            'about_recruiter',
+                            'more_about_recruiter',
+                            'upload_job',
+                            'wallet'
+    ])->paginate();
         return $this->sendResponse($users, "Users Fetched Successfully");
     }
 
@@ -45,7 +56,21 @@ class RegisterController extends BaseController
         $success['email'] =  $user->email;
         $user->user_type;
         $success['user'] =  $user;
-   
+
+        // create user wallet
+        if ($user->user_type->name == "recruiter")
+        {
+
+            $wallet_data = [
+                'user_id' => $user->id,
+                'amount' => 0,
+            ];
+
+            $wallet = Wallet::create($wallet_data);
+            $success['wallet'] = $wallet;
+       
+        }
+        
         return $this->sendResponse($success, 'User registered successfully.');
     }
    
@@ -87,6 +112,7 @@ class RegisterController extends BaseController
                             'about_recruiter',
                             'more_about_recruiter',
                             'upload_job',
+                            'wallet'
         ])->find($id);
 
         return $this->sendResponse($user, "User Found Successfully" );
@@ -137,5 +163,35 @@ class RegisterController extends BaseController
         return $this->sendResponse([], $message );
 
     }
+
+    // Forgot Password Api
+    public function forgot_password(Request $request)
+{
+    $input = $request->all();
+    $rules = array(
+        'email' => "required|email",
+    );
+    $validator = Validator::make($input, $rules);
+    if ($validator->fails()) {
+        $arr = array("status" => 400, "message" => $validator->errors()->first(), "data" => array());
+    } else {
+        try {
+            $response = Password::sendResetLink($request->only('email'), function (Message $message) {
+                $message->subject($this->getEmailSubject());
+            });
+            switch ($response) {
+                case Password::RESET_LINK_SENT:
+                    return \Response::json(array("status" => 200, "message" => trans($response), "data" => array()));
+                case Password::INVALID_USER:
+                    return \Response::json(array("status" => 400, "message" => trans($response), "data" => array()));
+            }
+        } catch (\Swift_TransportException $ex) {
+            $arr = array("status" => 400, "message" => $ex->getMessage(), "data" => []);
+        } catch (Exception $ex) {
+            $arr = array("status" => 400, "message" => $ex->getMessage(), "data" => []);
+        }
+    }
+    return \Response::json($arr);
+}
 
 }

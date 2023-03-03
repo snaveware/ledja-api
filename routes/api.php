@@ -17,6 +17,7 @@ use App\Http\Controllers\JobController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\PasswordResetLinkController;
 
 
 /*
@@ -35,6 +36,9 @@ Route::controller(RegisterController::class)->group(function() {
     Route::post('login', 'login');
 
 });
+
+Route::post('send_reset_link', [PasswordResetLinkController::class, 'store']);
+
 
 Route::middleware('auth:sanctum')->group( function () {
     Route::resource('user_types', UserTypeController::class);
@@ -56,6 +60,7 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('/applications/{id}', [ApplicationController::class, 'update']);
     Route::get('/get_user_jobs/{user_id}', [JobController::class, 'get_user_jobs']);
     Route::post('/filter_jobs', [JobController::class, 'filter_jobs']);
+    Route::post('/transactions/{user_id}', [TransactionController::class, 'transact']);
 
     Route::resource('job_categories', JobCategoryController::class);
     Route::resource('recruiter_basic_infos', BasicInfoRecruiterController::class);

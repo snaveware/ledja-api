@@ -63,6 +63,7 @@ class Job extends Model
         'communication_preferences',
         // 'skills_assessment',
         'apply_method',
+        'send_to_email',
     ];
 
     public function user(): BelongsTo

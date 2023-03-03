@@ -55,6 +55,7 @@ class JobController extends BaseController
             'with_resume' => 'required',
             'communication_preferences' => 'required',
             'apply_method' => 'required',
+            'send_to_email' => 'required',
             // 'skills_assessment' => 'nullable',
         ]);
 
@@ -177,7 +178,6 @@ class JobController extends BaseController
             'salary' => 'nullable',
             'experience_level' => 'nullable',
             'type' => 'nullable',
-            'skills_assessment' => 'nullable',
         ]);
 
         if($validator->fails()){
@@ -192,7 +192,6 @@ class JobController extends BaseController
         ->salary($input['salary'])
         ->title($input['title'])
         ->experienceLevel($input['experience_level'])
-        ->type($input['type'])
         ->datePosted($input['date_posted'])
         ->get();
         // $jobs = Job::ofSalary($input['salary'])
