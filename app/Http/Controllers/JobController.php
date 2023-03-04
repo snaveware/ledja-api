@@ -191,6 +191,7 @@ class JobController extends BaseController
         $jobs = Job::type($input['type'])
         ->salary($input['salary'])
         ->title($input['title'])
+        ->title($input['location'])
         ->experienceLevel($input['experience_level'])
         ->datePosted($input['date_posted'])
         ->get();

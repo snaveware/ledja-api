@@ -18,7 +18,7 @@ class Job extends Model
     }
     public function scopeSalary($query, $salary)
     {
-        return $query->where('salary', '>=', $salary);
+        return $query->where( 'salary' , 'like', '%'.$salary.'%');
     }
     public function scopeTitle($query, $title)
     {
