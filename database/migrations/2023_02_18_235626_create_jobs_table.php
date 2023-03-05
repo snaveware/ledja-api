@@ -21,16 +21,12 @@ return new class extends Migration
             $table->string('title');
             $table->string('location');
             $table->string('description');
-            $table->string('salary');
-            $table->string('experience_level');
             $table->string('type');
             $table->integer('no_of_hires');
             $table->string('hiring_speed');
             $table->boolean('own_completion');
             $table->boolean('with_recommendation');
-            $table->boolean('with_resume');
             $table->string('communication_preferences');
-            // $table->string('skills_assessment');
             $table->string('apply_method');
             $table->timestamps();
 

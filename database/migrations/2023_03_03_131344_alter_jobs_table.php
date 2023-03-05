@@ -13,7 +13,7 @@ return new class extends Migration
     {
         //
         Schema::table('jobs', function($table) {
-            $table->string('with_resume')->change();
+            $table->string('with_resume');
         });
     }
 
