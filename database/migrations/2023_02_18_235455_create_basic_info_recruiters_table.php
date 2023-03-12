@@ -21,6 +21,10 @@ return new class extends Migration
             $table->unsignedBigInteger('revenue');
             $table->string('founded_on');
             $table->string('ceo');
+            $table->string('avatar')->nullable();
+            $table->string('avatar_url')->nullable();
+            $table->string('company_avatar')->nullable();
+            $table->string('company_avatar_url')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

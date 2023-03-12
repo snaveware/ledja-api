@@ -11,20 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('basic_info_jobseekers', function (Blueprint $table) {
+        Schema::create('skills', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('fname');
-            $table->string('lname');
-            $table->string('phone_no');
-            $table->string('position');
-            $table->string('location');
-            $table->string('avatar')->nullable();
-            $table->string('avatar_url')->nullable();
+            $table->string('name');
+            $table->string('certification');
+            $table->string('proficiency');
+            $table->string('other')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
-
         });
     }
 
@@ -33,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('basic_info_jobseekers');
+        Schema::dropIfExists('skills');
     }
 };

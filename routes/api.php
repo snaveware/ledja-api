@@ -18,6 +18,9 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PasswordResetLinkController;
+use App\Http\Controllers\WorkExperienceController;
+use App\Http\Controllers\EducationController;
+use App\Http\Controllers\SkillController;
 
 
 /*
@@ -71,6 +74,11 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::resource('applications', ApplicationController::class);
     Route::resource('wallets', WalletController::class);
     Route::resource('transactions', TransactionController::class);
+    Route::resource('education', EducationController::class);
+    Route::resource('skills', SkillController::class);
+    Route::resource('work_experiences', WorkExperienceController::class);
 
+    // Get individual wallet for user
+    Route::get('wallets/user/{user_id}', [WalletController::class, 'get_user_wallet']);
 
 });

@@ -5,21 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\Wallet;
-use App\Models\User;
+use App\Models\Skill;
 use Validator;
 use App\Http\Controllers\API\BaseController as BaseController;
 
 
-class WalletController extends BaseController
+class SkillController extends BaseController
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $wallets = Wallet::with(['user', 'transactions'])->paginate();
-        return $this->sendResponse($wallets, "Wallets Fetched Successfully");
+        $skills = Skill::with(['user'])->paginate();
+        return $this->sendResponse($skills, "Skills Fetched Successfully");
     }
 
     /**
@@ -39,7 +38,10 @@ class WalletController extends BaseController
         // validate fields
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
-            'amount' => 'required',
+            'name' => 'required',
+            'certification' => 'required',
+            'proficiency' => 'required',
+            'other' => 'nullable',
         ]);
 
         if($validator->fails()){
@@ -47,9 +49,9 @@ class WalletController extends BaseController
         }
 
         $input = $request->all();
-        $wallets = Wallet::create($input);
+        $skill = Skill::create($input);
 
-        return $this->sendResponse($wallets, "Wallet Created Successfully" );
+        return $this->sendResponse($skill, "Skill Created Successfully" );
 
 
 
@@ -61,23 +63,10 @@ class WalletController extends BaseController
     public function show(string $id)
     {
         //
-        $wallets = Wallet::with(['user', 'transactions'])->find($id);
+        $skill = Skill::with(['user'])->find($id);
 
-        return $this->sendResponse($wallets, "Wallet Found Successfully" );
+        return $this->sendResponse($skill, "Skill Found Successfully" );
 
-
-    }
-
-    /**
-     * Display the wallet for a user.
-     */
-    public function get_user_wallet(string $user_id)
-    {
-        // Get wallet  where user is user_id
-        $user_wallet = Wallet::with('user')->where('user_id', $user_id)->get();
-        // $user_wallet->user();
-
-        return $this->sendResponse($user_wallet, "User Wallet Found Successfully" );
 
     }
 
@@ -95,14 +84,12 @@ class WalletController extends BaseController
     public function update(Request $request, string $id)
     {
         //
-        $wallets = Wallet::find($id);
+        $skill = Skill::find($id);
 
         $input = $request->all();
-        $result = $wallets->update($input);
+        $result = $skill->update($input);
 
-        return $this->sendResponse($wallets, "Wallet Updated Successfully" );
-
-
+        return $this->sendResponse($skill, "Skill Updated Successfully" );
 
     }
 
@@ -112,19 +99,19 @@ class WalletController extends BaseController
     public function destroy(string $id)
     {
         //
-        $wallets = Wallet::find($id);
+        $skill = Skill::find($id);
 
-        if ($wallets->has('user'))
+        if ($skill->has('user'))
         {
             $result = [];
-            $message = "Cannot delete Wallet,it contains user";
+            $message = "Cannot delete Skill,it contains users";
         }
 
         else 
         {
             $result = [];
-            $message = "Wallet Deleted Successfully";
-            $wallets->delete();
+            $message = "Skill Deleted Successfully";
+            $skill->delete();
 
         }
 

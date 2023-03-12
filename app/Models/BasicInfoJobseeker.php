@@ -23,7 +23,8 @@ class BasicInfoJobseeker extends Model
         'phone_no',
         'position',
         'location',
-        'avatar'
+        'avatar',
+        'avatar_url',
     ];
 
 }

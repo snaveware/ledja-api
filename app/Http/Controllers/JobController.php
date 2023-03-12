@@ -195,9 +195,7 @@ class JobController extends BaseController
         ->experienceLevel($input['experience_level'])
         ->datePosted($input['date_posted'])
         ->get();
-        // $jobs = Job::ofSalary($input['salary'])
-        // ->ofLocation($input['location'])
-        // ->get();
+      
 
         return $this->sendResponse($jobs, "Jobs Fetched Successfully" );
 

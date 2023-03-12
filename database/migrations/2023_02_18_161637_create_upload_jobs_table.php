@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('resume');
-            $table->string('other_docs');
+            $table->string('resume_url')->nullable();
+            $table->string('other_docs')->nullable();
+            $table->string('other_docs_urls')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

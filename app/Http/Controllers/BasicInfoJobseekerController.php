@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\API\BaseController as BaseController;
 use Validator;
+use Illuminate\Support\Facades\Storage;
+
 
 
 class BasicInfoJobseekerController extends BaseController
@@ -42,19 +44,23 @@ class BasicInfoJobseekerController extends BaseController
             'lname' => 'required',
             'phone_no' => 'required',
             'position' => 'required',
-            'location' => 'required'
+            'location' => 'required',
+            'avatar' => 'nullable',
         ]);
 
-        $path = $request->file('avatar')->storeAs(
-            'avatars', $request->user()->id
-        );
+        $input = $request->all();
+
+        if($request->hasFile('avatar') )
+        {
+            $path = Storage::disk('public')->putFile('avatars', $request->file('avatar'));
+            $url = env('APP_URL') . Storage::url($path);
+            $input['avatar_url'] = $url;
+        }
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());       
         }
 
-        $input = $request->all();
-        $input['avatar'] = $path;
         $basic_infos = BasicInfoJobSeeker::create($input);
 
         return $this->sendResponse($basic_infos, "Basic Info Created Successfully" );
@@ -100,12 +106,9 @@ class BasicInfoJobseekerController extends BaseController
 
         if($request->has('avatar'))
         {
-            $path = $request->file('avatar')->storeAs(
-                'avatars', $request->user()->id
-            );
-
-            $input['avatar'] = $path;
-            
+            $path = Storage::disk('public')->putFile('avatars', $request->file('avatar'));
+            $url = env('APP_URL') . Storage::url($path);
+            $input['avatar_url'] = $url;
             
         }
         $result = $basic_infos->update($input);

@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\API\BaseController as BaseController;
 use Validator;
+use Illuminate\Support\Facades\Storage;
+
 
 class UploadJobController extends BaseController
 {
@@ -38,24 +40,41 @@ class UploadJobController extends BaseController
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'resume' => 'required',
-            'other_docs' => 'required'
+            'other_docs' => 'nullable'
         ]);
-
-        $resume_path = $request->file('resume')->storeAs(
-            'resumes', $request->user()->id
-        );
-
-        $other_docs_path = $request->file('other_docs')->storeAs(
-            'other_docs', $request->user()->id
-        );
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());       
         }
 
         $input = $request->all();
-        $input['resume'] = $resume_path;
-        $input['other_docs'] = $other_docs_path;
+
+        if($request->hasFile('resume'))
+        {
+            $path = Storage::disk('public')->putFile('resumes', $request->file('resume'));
+            $url = env('APP_URL') . Storage::url($path);
+            $input['resume_url'] = $url;
+            
+        }
+
+        $other_docs_urls = [];
+        if($request->hasFile('other_docs'))
+        {
+            
+            $files = $request->file('other_docs');
+
+            foreach($files as $file)
+            {
+                $path = Storage::disk('public')->putFile('other_docs', $file);
+                $url = env('APP_URL') . Storage::url($path);
+                array_push($other_docs_urls, $url);
+            }
+
+            $result = implode(" | ", $other_docs_urls);
+            $input['other_docs_urls'] = $result;
+           
+        }
+
         $upload_job = UploadJob::create($input);
 
         return $this->sendResponse($upload_job, "Upload Jobs Created Successfully" );
@@ -97,29 +116,35 @@ class UploadJobController extends BaseController
 
         if(count($input))
         {
+        
+        $input = $request->all();
 
-
-        if($request->has('resume'))
+        if($request->hasFile('resume'))
         {
-            $path = $request->file('resume')->storeAs(
-                'resume', $request->user()->id
-            );
-
-            $input['resume'] = $path;
-            
+            $path = Storage::disk('public')->putFile('resumes', $request->file('resume'));
+            $url = env('APP_URL') . Storage::url($path);
+            $input['resume_url'] = $url;
             
         }
 
-        if($request->has('other_docs'))
+        $other_docs_urls = [];
+        if($request->hasFile('other_docs'))
         {
-            $path = $request->file('other_docs')->storeAs(
-                'other_docs', $request->user()->id
-            );
-
-            $input['other_docs'] = $path;
             
+            $files = $request->file('other_docs');
+
+            foreach($files as $file)
+            {
+                $path = Storage::disk('public')->putFile('other_docs', $file);
+                $url = env('APP_URL') . Storage::url($path);
+                array_push($other_docs_urls, $url);
+            }
+
+            $result = implode(" | ", $other_docs_urls);
+            $input['other_docs_urls'] = $result;
             
         }
+    
         $result = $upload_jobs->update($input);
 
         return $this->sendResponse($upload_jobs, "Upload Jobs Updated Successfully" );

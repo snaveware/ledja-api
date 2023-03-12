@@ -16,9 +16,15 @@ class UploadJob extends Model
         return $this->belongsTo(User::class);
     }
 
+    protected $casts = [
+        'other_docs' => 'array',
+    ];
+
     protected $fillable = [
         'user_id',
         'resume',
-        'other_docs'
+        'resume_url',
+        'other_docs',
+        'other_docs_urls',
     ];
 }

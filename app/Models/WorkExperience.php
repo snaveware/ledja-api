@@ -7,23 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 
-class BasicInfoRecruiter extends Model
+class WorkExperience extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
-        'company_name',
-        'industry',
-        'headquarters',
-        'company_size',
-        'revenue',
-        'founded_on',
-        'ceo',
-        'avatar',
-        'avatar_url',
-        'company_avatar',
-        'company_avatar_url',
+        'title',
+        'company',
+        'duration',
+        'tasks',
     ];
 
     public function user(): BelongsTo

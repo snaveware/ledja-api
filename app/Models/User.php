@@ -91,6 +91,21 @@ class User extends Authenticatable
         return $this->hasOne(UploadJob::class);
     }
 
+    public function education(): HasMany
+    {
+        return $this->hasMany(Education::class);
+    }
+
+    public function skills(): HasMany
+    {
+        return $this->hasMany(Skill::class);
+    }
+
+    public function work_experiences(): HasMany
+    {
+        return $this->hasMany(WorkExperience::class);
+    }
+
     public function jobs(): HasMany
     {
         return $this->hasMany(Job::class);

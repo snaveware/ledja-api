@@ -8,6 +8,8 @@ use Illuminate\Http\Response;
 use App\Models\BasicInfoRecruiter;
 use Validator;
 use App\Http\Controllers\API\BaseController as BaseController;
+use Illuminate\Support\Facades\Storage;
+
 
 
 class BasicInfoRecruiterController extends BaseController
@@ -45,6 +47,10 @@ class BasicInfoRecruiterController extends BaseController
             'revenue' => 'required',
             'founded_on' => 'required',
             'ceo' => 'required',
+            'avatar' => 'nullable',
+            'avatar_url' => 'nullable',
+            'company_avatar' => 'nullable',
+            'company_avatar_url' => 'nullable',
         ]);
 
         if($validator->fails()){
@@ -52,9 +58,25 @@ class BasicInfoRecruiterController extends BaseController
         }
 
         $input = $request->all();
-        $job_category = BasicInfoRecruiter::create($input);
 
-        return $this->sendResponse($job_category, "Basic Recruiter's Info Created Successfully" );
+        // TODO: Check if avatars are present,if so add them
+        if($request->hasFile('avatar') )
+        {
+            $path = Storage::disk('public')->putFile('avatars', $request->file('avatar'));
+            $url = env('APP_URL') . Storage::url($path);
+            $input['avatar_url'] = $url;
+        }
+
+        if($request->hasFile('company_avatar') )
+        {
+            $path = Storage::disk('public')->putFile('company_avatars', $request->file('company_avatar'));
+            $url = env('APP_URL') . Storage::url($path);
+            $input['company_avatar_url'] = $url;
+        }
+
+        $basic_recruiters_info = BasicInfoRecruiter::create($input);
+
+        return $this->sendResponse($basic_recruiters_info, "Basic Recruiter's Info Created Successfully" );
 
 
 
