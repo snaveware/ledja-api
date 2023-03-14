@@ -30,7 +30,10 @@ class RegisterController extends BaseController
                             'about_recruiter',
                             'more_about_recruiter',
                             'upload_job',
-                            'wallet'
+                            'wallet',
+                            'work_experiences',
+                            'skills',
+                            'education',
     ])->paginate();
         return $this->sendResponse($users, "Users Fetched Successfully");
     }
@@ -112,7 +115,10 @@ class RegisterController extends BaseController
                             'about_recruiter',
                             'more_about_recruiter',
                             'upload_job',
-                            'wallet'
+                            'wallet',
+                            'work_experiences',
+                            'skills',
+                            'education',
         ])->find($id);
 
         return $this->sendResponse($user, "User Found Successfully" );
