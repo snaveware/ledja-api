@@ -41,7 +41,7 @@ class ApplicationController extends BaseController
             'user_id' => 'required',
             'status' => 'required',
             'cover_letter' => 'required',
-            // 'skills_assessment' => 'nullable',
+            'skills_assessment' => 'nullable',
         ]);
 
         if($validator->fails()){

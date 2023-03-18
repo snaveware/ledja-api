@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('job_id');
             $table->longText('cover_letter');
-            $table->string('skills_assessment');
+            $table->string('skills_assessment')->nullable();
             $table->string('status');
             $table->timestamps();
 
