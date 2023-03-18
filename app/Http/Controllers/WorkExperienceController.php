@@ -41,6 +41,7 @@ class WorkExperienceController extends BaseController
             'title' => 'required',
             'company' => 'required',
             'duration' => 'required',
+            'description' => 'nullable',
             'tasks' => 'nullable',
         ]);
 

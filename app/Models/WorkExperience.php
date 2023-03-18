@@ -16,6 +16,7 @@ class WorkExperience extends Model
         'title',
         'company',
         'duration',
+        'description',
         'tasks',
     ];
 

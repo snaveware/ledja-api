@@ -18,6 +18,11 @@ class JobController extends BaseController
     public function index()
     {
         $jobs = Job::with(['user','job_category'])->paginate();
+        foreach($jobs as $job)
+        {
+            // Get the recruiter basic info for each user
+            $job->recruiter_basic_info = $job->user->basic_info_recruiter;
+        }
         return $this->sendResponse($jobs, "Jobs Fetched Successfully");
     }
 
@@ -85,9 +90,10 @@ class JobController extends BaseController
     public function show(string $id)
     {
         //
-        $jobs = Job::with(['user','job_category'])->find($id);
+        $job = Job::with(['user','job_category'])->find($id);
+        $job->recruiter_basic_info = $job->user->basic_info_recruiter;
 
-        return $this->sendResponse($jobs, "Jobs Found Successfully" );
+        return $this->sendResponse($job, "Jobs Found Successfully" );
 
 
 

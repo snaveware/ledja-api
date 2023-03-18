@@ -74,6 +74,8 @@ class BasicInfoRecruiterController extends BaseController
             $input['company_avatar_url'] = $url;
         }
 
+        // dd($input);
+
         $basic_recruiters_info = BasicInfoRecruiter::create($input);
 
         return $this->sendResponse($basic_recruiters_info, "Basic Recruiter's Info Created Successfully" );
