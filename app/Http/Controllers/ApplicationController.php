@@ -21,6 +21,25 @@ class ApplicationController extends BaseController
         return $this->sendResponse($applications, "Applications Fetched Successfully");
     }
 
+    public function recruiter_applications(Request $request, string $rec_id)
+    {
+        $input = $request->all();
+        $applications = Application::with(['job', 'user'])->status($input['status'])->get();
+        $rec_apps = [];
+
+        foreach($applications as $application)
+        {
+            
+            if($application->job->user_id == $rec_id)
+            {
+                array_push($rec_apps, $application);
+            }
+        }
+
+        return $this->sendResponse($rec_apps, "Recruiter Applications Fetched");
+
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -39,7 +58,7 @@ class ApplicationController extends BaseController
         $validator = Validator::make($request->all(), [
             'job_id' => 'required',
             'user_id' => 'required',
-            'status' => 'required',
+            'status' => 'nullable',
             'cover_letter' => 'required',
             'skills_assessment' => 'nullable',
         ]);
@@ -48,11 +67,16 @@ class ApplicationController extends BaseController
             return $this->sendError('Validation Error.', $validator->errors());       
         }
 
+        // dd(is_null($request->status));
+        
+        if(is_null($request->status))
+        {
+            $request->status = 'awaiting';
+        }
+
         $input = $request->all();
-        // $path = $request->file('skills_assessment')->storeAs(
-        //     'completed_skills_assessment', $request->user()->id
-        // );
-        // $input['skills_assessment'] = $path;
+        $input['status'] = $request->status;
+
         $application = Application::create($input);
 
         return $this->sendResponse($application, "Application Created Successfully" );
