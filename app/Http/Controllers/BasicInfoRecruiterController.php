@@ -74,7 +74,6 @@ class BasicInfoRecruiterController extends BaseController
             $input['company_avatar_url'] = $url;
         }
 
-        // dd($input);
 
         $basic_recruiters_info = BasicInfoRecruiter::create($input);
 
@@ -90,7 +89,7 @@ class BasicInfoRecruiterController extends BaseController
     public function show(string $id)
     {
         //
-        $job_category = BasicInfoRecruiter::with('user')->find($id);
+        $basic_recruiters_info = BasicInfoRecruiter::with('user')->find($id);
 
         return $this->sendResponse($job_category, "Basic Recruiter's Info Found Successfully" );
 
@@ -112,12 +111,28 @@ class BasicInfoRecruiterController extends BaseController
     public function update(Request $request, string $id)
     {
         //
-        $job_category = BasicInfoRecruiter::find($id);
+        $basic_recruiters_info = BasicInfoRecruiter::find($id);
 
         $input = $request->all();
-        $result = $job_category->update($input);
 
-        return $this->sendResponse($job_category, "Basic Recruiter's Info Updated Successfully" );
+        // TODO: Check if avatars are present,if so add them
+        if($request->hasFile('avatar') )
+         {
+             $path = Storage::disk('public')->putFile('avatars', $request->file('avatar'));
+             $url = env('APP_URL') . Storage::url($path);
+             $input['avatar_url'] = $url;
+         }
+ 
+         if($request->hasFile('company_avatar') )
+         {
+             $path = Storage::disk('public')->putFile('company_avatars', $request->file('company_avatar'));
+             $url = env('APP_URL') . Storage::url($path);
+             $input['company_avatar_url'] = $url;
+         }
+
+        $result = $basic_recruiters_info->update($input);
+
+        return $this->sendResponse($basic_recruiters_info, "Basic Recruiter's Info Updated Successfully" );
 
 
 
