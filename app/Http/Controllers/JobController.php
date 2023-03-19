@@ -220,6 +220,12 @@ class JobController extends BaseController
         ->datePosted($input['date_posted'])
         ->get();
       
+        $filtered_jobs = [];
+        foreach($jobs as $job)
+        {
+            // Get the recruiter basic info for each user
+            $job->recruiter_basic_info = $job->user->basic_info_recruiter;
+        }
 
         return $this->sendResponse($jobs, "Jobs Fetched Successfully" );
 

@@ -58,6 +58,8 @@ class RegisterController extends BaseController
         $success['token'] =  $user->createToken('MyApp')->plainTextToken;
         $success['email'] =  $user->email;
         $user->user_type;
+        $user->basic_info_jobseeker;
+        $user->basic_info_recruiter;
         $success['user'] =  $user;
 
         // create user wallet
@@ -88,7 +90,29 @@ class RegisterController extends BaseController
             $user = Auth::user(); 
             $success['token'] =  $user->createToken('MyApp')->plainTextToken; 
             $success['email'] =  $user->email;
+            // 'job_seeker_link',
+            // 'recruiter_link',
+            // 'about_job_seeker',
+            // 'about_recruiter',
+            // 'more_about_recruiter',
+            // 'upload_job',
+            // 'wallet',
+            // 'work_experiences',
+            // 'skills',
+            // 'education',
             $user->user_type;
+            $user->basic_info_jobseeker;
+            $user->basic_info_recruiter;
+            $user->job_seeker_link;
+            $user->recruiter_link;
+            $user->about_job_seeker;
+            $user->about_recruiter;
+            $user->more_about_recruiter;
+            $user->upload_job;
+            $user->wallet;
+            $user->work_experiences;
+            $user->skills;
+            $user->education;
             $success['user'] =  $user;
             // $success['user_type'] =  $user->user_type;
 

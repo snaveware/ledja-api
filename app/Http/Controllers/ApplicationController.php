@@ -18,6 +18,10 @@ class ApplicationController extends BaseController
     public function index()
     {
         $applications = Application::with(['job', 'user'])->paginate();
+        foreach($applications as $application)
+        {
+            $application->jobseeker_basic_info = $application->user->basic_info_jobseeker;
+        }
         return $this->sendResponse($applications, "Applications Fetched Successfully");
     }
 
@@ -120,6 +124,7 @@ class ApplicationController extends BaseController
     {
         //
         $application = Application::with(['job','user'])->find($id);
+        $application->jobseeker_basic_info = $application->user->basic_info_jobseeker;
 
         return $this->sendResponse($application, "Application Found Successfully" );
 
