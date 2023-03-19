@@ -21,22 +21,50 @@ class ApplicationController extends BaseController
         return $this->sendResponse($applications, "Applications Fetched Successfully");
     }
 
-    public function recruiter_applications(Request $request, string $rec_id)
+    public function recruiter_applications(Request $request, string $job_id)
     {
+        $request->status = $request->status == null ? $request->merge(['status' => '']) :  $request->status;
         $input = $request->all();
-        $applications = Application::with(['job', 'user'])->status($input['status'])->get();
-        $rec_apps = [];
+        $applications = Application::with(['job', 'user'])->status($input['status'])->where('job_id', $job_id)->get();
+        $job_apps = [];
+        $job_apps_with_names = [];
+        // dd($applications);
+        // return $this->sendResponse($applications, "Recruiter Applications Fetched");
+
 
         foreach($applications as $application)
         {
-            
-            if($application->job->user_id == $rec_id)
+            // Check if there is a fname and lname filter
+            if ($request->fname != null || $request->lname != null)
             {
-                array_push($rec_apps, $application);
+                // dd($application->user->basic_info_jobseeker->fname);
+                if($request->fname == $application->user->basic_info_jobseeker->fname || $request->lname == $application->user->basic_info_jobseeker->lname )
+                {
+                    array_push($job_apps_with_names, $application);
+                }
+
+                else
+                {
+                    // array_push($job_apps_with_names, "");
+                    continue;
+                }
             }
+           
         }
 
-        return $this->sendResponse($rec_apps, "Recruiter Applications Fetched");
+        if ($request->fname != null || $request->lname != null)
+        {
+            $job_apps = $job_apps_with_names;
+            return $this->sendResponse($job_apps, "Recruiter Applications Fetched");
+        }
+
+
+        if(count($job_apps) == 0)
+        {
+            $job_apps = $applications;
+        }
+
+        return $this->sendResponse($job_apps, "Recruiter Applications Fetched");
 
     }
 

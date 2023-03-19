@@ -47,7 +47,8 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::resource('user_types', UserTypeController::class);
     Route::get('/users', [RegisterController::class, 'index']);
     Route::post('/basic_infos/{id}', [BasicInfoJobseekerController::class, 'update']);
-    // Route::post('/recruiter_basic_infos/{id}', [BasicInfoRecruiterController::class, 'update']);
+    Route::post('/recruiter_basic_infos/{id}', [BasicInfoRecruiterController::class, 'update']);
+    Route::post('/applications/job/{job_id}', [ApplicationController::class, 'recruiter_applications']);
     Route::post('/upload_jobs/{id}', [UploadJobController::class, 'update']);
 
 

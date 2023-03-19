@@ -6,6 +6,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Job;
+use App\Models\JobCategory;
+use App\Models\Wallet;
 use Validator;
 use App\Http\Controllers\API\BaseController as BaseController;
 
@@ -76,6 +78,22 @@ class JobController extends BaseController
 
 
         $input = $request->all();
+        // Get job category
+        $job_category = JobCategory::find($input['job_category_id']);
+        $wallet = Wallet::where('user_id', $input['user_id'])->first();
+        // dd($wallet->amount < $job_category->cost);
+        // dd($job_category->cost);
+        // dd($wallet->amount);
+        // Deduct cost from wallet
+        if ($wallet->amount < $job_category->cost)
+        {
+            // Inform user if recruiter doesn't have the funds
+            return $this->sendResponse([], "Not enough funds,you have Kshs. {$wallet->amount} in your wallet,the job costs Kshs {$job_category->cost}, please top up to continue" );
+
+        }
+       
+        $wallet->amount = $wallet->amount - $job_category->cost;
+        $wallet->save();
         $jobs = Job::create($input);
 
         return $this->sendResponse($jobs, "Jobs Created Successfully" );

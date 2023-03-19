@@ -64,5 +64,12 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        DB::table('wallets')->insert([
+            'user_id' => 2,
+            'amount' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }
