@@ -32,9 +32,7 @@ class ApplicationController extends BaseController
         $applications = Application::with(['job', 'user'])->status($input['status'])->where('job_id', $job_id)->get();
         $job_apps = [];
         $job_apps_with_names = [];
-        // dd($applications);
-        // return $this->sendResponse($applications, "Recruiter Applications Fetched");
-
+        
 
         foreach($applications as $application)
         {
@@ -49,7 +47,6 @@ class ApplicationController extends BaseController
 
                 else
                 {
-                    // array_push($job_apps_with_names, "");
                     continue;
                 }
             }
