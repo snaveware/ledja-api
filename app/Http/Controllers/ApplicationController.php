@@ -42,6 +42,7 @@ class ApplicationController extends BaseController
                 // dd($application->user->basic_info_jobseeker->fname);
                 if($request->fname == $application->user->basic_info_jobseeker->fname || $request->lname == $application->user->basic_info_jobseeker->lname )
                 {
+                    $application->jobseeker_basic_info = $application->user->basic_info_jobseeker;
                     array_push($job_apps_with_names, $application);
                 }
 
@@ -63,6 +64,11 @@ class ApplicationController extends BaseController
         if(count($job_apps) == 0)
         {
             $job_apps = $applications;
+            foreach($applications as $application)
+            {
+                $application->jobseeker_basic_info = $application->user->basic_info_jobseeker;
+
+            }
         }
 
         return $this->sendResponse($job_apps, "Recruiter Applications Fetched");
