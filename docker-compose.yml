@@ -1,6 +1,7 @@
 version: '3'
 services:
-    laravel.test:
+    backend:
+        container_name: ledja-backend
         build:
             context: ./vendor/laravel/sail/runtimes/8.2
             dockerfile: Dockerfile
@@ -19,6 +20,10 @@ services:
             XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
         volumes:
             - '.:/var/www/html'
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.backend.rule=Host(`api.direktory.biz`)"
+            - "traefik.http.routers.backend.tls=true"
         networks:
             - sail
         depends_on:
@@ -99,6 +104,28 @@ services:
             - '/dev/shm:/dev/shm'
         networks:
             - sail
+
+    traefik:
+        image: traefik:latest
+        container_name: traefik
+        command:
+        - --entrypoints.web.address=:80
+        - --entrypoints.web-secure.address=:443
+        - --providers.docker=true
+        - --providers.file.directory=/configuration/
+        - --providers.file.watch=true
+        # restart: on-failure
+        ports:
+        - "80:80"
+        - "443:443"
+        volumes:
+        - "/var/run/docker.sock:/var/run/docker.sock:ro"
+        - "/etc/letsencrypt:/etc/letsencrypt"
+        # Add all our tls certificates here
+        # Frontend service tls
+        - "/etc/letsencrypt/live/api.direktory.biz/fullchain.pem:/certs/backend/fullchain.pem"
+        - "/etc/letsencrypt/live/api.direktory.biz/privkey.pem:/certs/backend/privkey.pem"
+        - "/srv/emr-be/configuration:/configuration/"
 networks:
     sail:
         driver: bridge
