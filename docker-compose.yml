@@ -125,7 +125,7 @@ services:
         # Frontend service tls
         - "/etc/letsencrypt/live/api.direktory.biz/fullchain.pem:/certs/backend/fullchain.pem"
         - "/etc/letsencrypt/live/api.direktory.biz/privkey.pem:/certs/backend/privkey.pem"
-        - "/srv/emr-be/configuration:/configuration/"
+        - "/srv/ledja/configuration:/configuration/"
 networks:
     sail:
         driver: bridge
