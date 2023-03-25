@@ -108,6 +108,8 @@ services:
     traefik:
         image: traefik:latest
         container_name: traefik
+        networks:
+            - sail
         command:
         - --entrypoints.web.address=:80
         - --entrypoints.web-secure.address=:443
