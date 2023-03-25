@@ -24,7 +24,6 @@ services:
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.backend.rule=Host(`api.direktory.biz`)"
-            - "traefik.docker.network=web"
             - "traefik.http.routers.backend.tls=true"
         networks:
             - sail
@@ -131,8 +130,6 @@ services:
 networks:
     sail:
         driver: bridge
-    web:
-        external: true
 volumes:
     sail-mysql:
         driver: local
