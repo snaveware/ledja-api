@@ -22,7 +22,9 @@ services:
         container_name: frontend_service
         # volumes:
         #     - .:/ledja-frontend
-        command: npm run dev
+        command: /bin/sh -c 'npm run build && npm run start'
+        env_file:
+            - ../ledja-frontend/.env
         ports:
             - "3000:3000"
         environment:
