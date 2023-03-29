@@ -49,7 +49,7 @@ services:
             expose:
               - 3000
             ports:
-              "3000:3000"
+              - "3000:3000"
             labels:
               - "traefik.enable=true"
               - "traefik.http.routers.frontend.rule=Host(`direktory.biz`)"
