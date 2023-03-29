@@ -1,12 +1,11 @@
 version: '3.8'
 services: 
-    main:
+    backend:
         build: 
             context: .
             dockerfile: Dockerfile
-        command: /bin/sh -c 'php artisan migrate --seed && php artisan serve --host=0.0.0.0'
-        env_file:
-            - .env
+        container_name: backend_service
+        command: /bin/sh -c 'php artisan serve --host=0.0.0.0'
         volumes:
             - .:/app
         ports:
@@ -17,19 +16,11 @@ services:
             - "traefik.enable=true"
             - "traefik.http.routers.backend.rule=Host(`api.direktory.biz`)"
             - "traefik.http.routers.backend.tls=true"
-
-    # queue:
-    #     build: 
-    #         context: .
-    #         dockerfile: Dockerfile
-    #     command: 'php artisan queue:work'
-    #     networks:
-    #         - laradock
-    #     depends_on: 
-    #         - db        
+      
 
     db:
         image: mysql:8.0
+        container_name: db
         environment:
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
             MYSQL_ROOT_HOST: '%'
@@ -40,21 +31,7 @@ services:
         volumes:
             - ./storage/dbdata:/var/lib/mysql
         ports:
-            - 3306:3306
-
-    frontend:
-            build: ../ledja-frontend
-            container_name: frontend
-            restart: unless-stopped
-            expose:
-              - 3000
-            ports:
-              - "3000:3000"
-            labels:
-              - "traefik.enable=true"
-              - "traefik.http.routers.frontend.rule=Host(`direktory.biz`)"
-              - "traefik.http.routers.frontend.tls=true"
-      
+            - 3306:3306     
 
     traefik:
         image: traefik:latest

@@ -16,40 +16,40 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // \App\Models\User::factory(10)->create();
-        DB::table('user_types')->insert([
+        DB::table('user_types')->updateOrInsert([
                 'name' => 'jobseeker',
                 'created_at' => now(),
                 'updated_at' => now(),
         ]);
 
-        DB::table('user_types')->insert([
+        DB::table('user_types')->updateOrInsert([
                 'name' => 'recruiter',
                 'created_at' => now(),
                 'updated_at' => now(),
         ]);
 
-        DB::table('job_categories')->insert([
+        DB::table('job_categories')->updateOrInsert([
                 'type' => 'basic',
                 'cost' => 5000,
                 'created_at' => now(),
                 'updated_at' => now(),
         ]);
 
-        DB::table('job_categories')->insert([
+        DB::table('job_categories')->updateOrInsert([
                 'type' => 'standard',
                 'cost' => 11000,
                 'created_at' => now(),
                 'updated_at' => now(),
         ]);
 
-        DB::table('job_categories')->insert([
+        DB::table('job_categories')->updateOrInsert([
                 'type' => 'premium',
                 'cost' => 20000,
                 'created_at' => now(),
                 'updated_at' => now(),
         ]);
 
-        DB::table('users')->insert([
+        DB::table('users')->updateOrInsert([
                 'user_type_id' => 1,
                 'email' => 'jobseeker1@test.com',
                 'password' => Hash::make('secret'),
@@ -57,7 +57,7 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
         ]);
 
-        DB::table('users')->insert([
+        DB::table('users')->updateOrInsert([
             'user_type_id' => 2,
             'email' => 'recruiter1@test.com',
             'password' => Hash::make('secret'),
@@ -65,7 +65,7 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        DB::table('wallets')->insert([
+        DB::table('wallets')->updateOrInsert([
             'user_id' => 2,
             'amount' => 0,
             'created_at' => now(),
