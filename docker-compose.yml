@@ -7,7 +7,7 @@ services:
         container_name: backend_service
         command: /bin/sh -c 'php artisan serve --host=0.0.0.0'
         volumes:
-            - .:/app
+            - .:/ledja
         ports:
             - 8000:8000
         depends_on: 
@@ -16,6 +16,22 @@ services:
             - "traefik.enable=true"
             - "traefik.http.routers.backend.rule=Host(`api.direktory.biz`)"
             - "traefik.http.routers.backend.tls=true"
+
+    frontend:
+        build: ../ledja-frontend
+        container_name: frontend_service
+        # volumes:
+        #     - .:/ledja-frontend
+        command: npm run dev
+        ports:
+            - "3000:3000"
+        environment:
+            NODE_ENV: development
+
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.frontend.rule=Host(`direktory.biz`)"
+            - "traefik.http.routers.frontend.tls=true"
       
 
     db:
@@ -54,8 +70,8 @@ services:
         - "/etc/letsencrypt/live/api.direktory.biz/fullchain.pem:/certs/backend/fullchain.pem"
         - "/etc/letsencrypt/live/api.direktory.biz/privkey.pem:/certs/backend/privkey.pem"
         # Frontend service tls
-        - "/etc/letsencrypt/live/direktory.biz/fullchain.pem:/certs/backend/fullchain.pem"
-        - "/etc/letsencrypt/live/direktory.biz/privkey.pem:/certs/backend/privkey.pem"
+        - "/etc/letsencrypt/live/direktory.biz/fullchain.pem:/certs/frontend/fullchain.pem"
+        - "/etc/letsencrypt/live/direktory.biz/privkey.pem:/certs/frontend/privkey.pem"
 
 
         - "/srv/ledja/configuration:/configuration/"
