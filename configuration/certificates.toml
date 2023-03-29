@@ -2,3 +2,6 @@
    certFile = "../etc/letsencrypt/live/api.direktory.biz/fullchain.pem"
    keyFile = "../etc/letsencrypt/live/api.direktory.biz/privkey.pem"
 
+[[tls.certificates]] #backend certificate
+   certFile = "../etc/letsencrypt/live/direktory.biz/fullchain.pem"
+   keyFile = "../etc/letsencrypt/live/direktory.biz/privkey.pem"

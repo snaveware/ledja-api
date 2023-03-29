@@ -1,1 +1,1 @@
-sail down
+docker compose down --remove-orphans

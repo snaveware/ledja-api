@@ -1,1 +1,1 @@
-./vendor/bin/sail up -d
+docker compose up
