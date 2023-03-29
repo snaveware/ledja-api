@@ -46,10 +46,6 @@ services:
             build: ../ledja-frontend
             container_name: frontend
             restart: unless-stopped
-            args:
-                WWWGROUP: '${WWWGROUP}'
-            environment:
-                WWWUSER: '${WWWUSER}'
             expose:
               - 3000
             ports:
