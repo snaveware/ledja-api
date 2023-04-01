@@ -21,6 +21,11 @@ use App\Http\Controllers\PasswordResetLinkController;
 use App\Http\Controllers\WorkExperienceController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\SkillController;
+use App\Http\Controllers\SkillsAssessmentController;
+use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\AnswerController;
+use App\Http\Controllers\ResultController;
+use App\Http\Controllers\ScoreController;
 
 
 /*
@@ -80,8 +85,19 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::resource('education', EducationController::class);
     Route::resource('skills', SkillController::class);
     Route::resource('work_experiences', WorkExperienceController::class);
+    Route::resource('skills_assessments', SkillsAssessmentController::class);
+    Route::resource('questions', QuestionController::class);
+    Route::resource('answers', AnswerController::class);
+    Route::resource('results', ResultController::class);
+    Route::resource('scores', ScoreController::class);
 
     // Get individual wallet for user
     Route::get('wallets/user/{user_id}', [WalletController::class, 'get_user_wallet']);
+
+    // Get results for the user
+    Route::get('get_result/{user_id}/test/{test_id}', [ ResultController::class, 'get_result' ]);
+
+    // Get score for the user
+    Route::get('get_score/{user_id}/test/{test_id}', [ ScoreController::class, 'get_score' ]);
 
 });

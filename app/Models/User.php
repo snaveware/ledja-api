@@ -125,4 +125,26 @@ class User extends Authenticatable
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function skills_assessments(): HasMany
+    {
+        return $this->hasMany(SkillAssessment::class);
+    }
+
+    public function questions(): HasMany
+    {
+        return $this->hasMany(Question::class);
+    }
+    
+    public function results(): HasMany
+    {
+        return $this->hasMany(Result::class);
+    }
+
+    public function scores(): HasMany
+    {
+        return $this->hasMany(Score::class);
+    }
+
+
 }
