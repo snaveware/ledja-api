@@ -39,11 +39,11 @@ use App\Http\Controllers\ScoreController;
 |
 */
 
-/* Route::controller(RegisterController::class)->group(function() {
+Route::controller(RegisterController::class)->group(function() {
     Route::post('register', 'register');
     Route::post('login', 'login');
 
-}); */
+});
 /* Route::middleware('sanctum')->group(function() {
     Route::post('register', [RegisterController::class, 'register']);
     Route::post('login', [RegisterController::class, 'login']);
@@ -54,9 +54,6 @@ Route::post('send_reset_link', [PasswordResetLinkController::class, 'store']);
 
 
 Route::middleware('auth:sanctum')->group( function () {
-    /* REGISTER AND LOGIN ROUTES */
-    Route::post('register', [RegisterController::class, 'register']);
-    Route::post('login', [RegisterController::class, 'login']);
 
     /* OTHER ROUTES */
     Route::resource('user_types', UserTypeController::class);
