@@ -44,18 +44,11 @@ Route::controller(RegisterController::class)->group(function() {
     Route::post('login', 'login');
 
 });
-/* Route::middleware('sanctum')->group(function() {
-    Route::post('register', [RegisterController::class, 'register']);
-    Route::post('login', [RegisterController::class, 'login']);
-    // Route::post('login', 'login');
-}); */
 
 Route::post('send_reset_link', [PasswordResetLinkController::class, 'store']);
 
 
 Route::middleware('auth:sanctum')->group( function () {
-
-    /* OTHER ROUTES */
     Route::resource('user_types', UserTypeController::class);
     Route::get('/users', [RegisterController::class, 'index']);
     Route::post('/basic_infos/{id}', [BasicInfoJobseekerController::class, 'update']);
