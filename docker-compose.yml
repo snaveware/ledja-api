@@ -47,7 +47,7 @@ services:
             MYSQL_PASSWORD: '${DB_PASSWORD}'
             MYSQL_ALLOW_EMPTY_PASSWORD: 1
         volumes:
-            - ./data/dbdata:/var/lib/mysql
+            - dbdata:/var/lib/mysql/data
         ports:
             - 3306:3306     
 
@@ -77,3 +77,6 @@ services:
 
 
         - "/srv/ledja/configuration:/configuration/"
+
+volumes:
+    dbdata:
