@@ -14,6 +14,7 @@ class JobCategory extends Model
     protected $fillable = [
         'type',
         'cost',
+        'description',
     ];
 
     public function jobs(): HasMany

@@ -101,6 +101,16 @@ class TransactionController extends BaseController
 
     }
 
+
+
+    public function get_transaction(string $user_id)
+    {
+        $transaction = Transaction::with(['user', 'wallet'])->where('user_id', $user_id)->get();
+
+        return $this->sendResponse($transaction, "Transaction Found Successfully" );
+
+    }
+
     /**
      * Show the form for editing the specified resource.
      */

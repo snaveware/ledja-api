@@ -40,13 +40,20 @@ class WorkExperienceController extends BaseController
             'user_id' => 'required',
             'title' => 'required',
             'company' => 'required',
-            'duration' => 'required',
+            // 'duration' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required',
             'description' => 'nullable',
             'tasks' => 'nullable',
         ]);
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());       
+        }
+
+        if($request->start_date > $request->end_date)
+        {
+            return $this->sendResponse([], "Your start date cannot be later than your end date!" );
         }
 
         $input = $request->all();
@@ -85,6 +92,11 @@ class WorkExperienceController extends BaseController
         //
         $work_experience = WorkExperience::find($id);
 
+        if($request->start_date > $request->end_date)
+        {
+            return $this->sendResponse([], "Your start date cannot be later than your end date!" );
+        }
+
         $input = $request->all();
         $result = $work_experience->update($input);
 
@@ -98,8 +110,8 @@ class WorkExperienceController extends BaseController
     public function destroy(string $id)
     {
         //
-        $work_experience = WorkExperience::find($id);
-
+        $work_experience = WorkExperience::findorFail($id);
+/* 
         if ($work_experience->has('user'))
         {
             $result = [];
@@ -112,7 +124,11 @@ class WorkExperienceController extends BaseController
             $message = "WorkExperience Deleted Successfully";
             $work_experience->delete();
 
-        }
+        } */
+
+        $message = "WorkExperience Deleted Successfully";
+        $work_experience->delete();
+
 
 
         return $this->sendResponse([], $message );

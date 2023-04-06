@@ -18,6 +18,8 @@ class WorkExperience extends Model
         'duration',
         'description',
         'tasks',
+        'start_date',
+        'end_date',
     ];
 
     public function user(): BelongsTo

@@ -9,6 +9,7 @@ use App\Http\Controllers\UploadJobController;
 use App\Http\Controllers\JobSeekerLinkController;
 use App\Http\Controllers\AboutJobSeekerController;
 use App\Http\Controllers\JobCategoryController;
+use App\Http\Controllers\JobTypeController;
 use App\Http\Controllers\BasicInfoRecruiterController;
 use App\Http\Controllers\RecruiterLinkController;
 use App\Http\Controllers\MoreAboutRecruiterController;
@@ -45,19 +46,28 @@ Route::controller(RegisterController::class)->group(function() {
 
 });
 
+/* Make jobs accessible everywhere */
+Route::resource('jobs', JobController::class);
+Route::get('/get_user_jobs/{user_id}', [JobController::class, 'get_user_jobs']);
+Route::post('/filter_jobs', [JobController::class, 'filter_jobs']);
+
+/* Make jobs accessible everywhere */
+Route::get('/users', [RegisterController::class, 'index']);
+Route::get('/users/{id}', [RegisterController::class, 'show']);
+
+
+
 Route::post('send_reset_link', [PasswordResetLinkController::class, 'store']);
 
 
 Route::middleware('auth:sanctum')->group( function () {
     Route::resource('user_types', UserTypeController::class);
-    Route::get('/users', [RegisterController::class, 'index']);
     Route::post('/basic_infos/{id}', [BasicInfoJobseekerController::class, 'update']);
     Route::post('/recruiter_basic_infos/{id}', [BasicInfoRecruiterController::class, 'update']);
     Route::post('/applications/job/{job_id}', [ApplicationController::class, 'recruiter_applications']);
     Route::post('/upload_jobs/{id}', [UploadJobController::class, 'update']);
 
 
-    Route::get('/users/{id}', [RegisterController::class, 'show']);
     Route::delete('/users/{id}', [RegisterController::class, 'destroy']);
 
     Route::resource('basic_infos', BasicInfoJobseekerController::class);
@@ -69,17 +79,17 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('/jobs/{id}', [JobController::class, 'update']);
     Route::post('/recruiter_basic_infos/{id}', [BasicInfoRecruiterController::class, 'update']);
     Route::post('/applications/{id}', [ApplicationController::class, 'update']);
-    Route::get('/get_user_jobs/{user_id}', [JobController::class, 'get_user_jobs']);
-    Route::post('/filter_jobs', [JobController::class, 'filter_jobs']);
+   
     Route::post('/filter_assessments', [SkillsAssessmentController::class, 'filter_assessments']);
     Route::post('/transactions/{user_id}', [TransactionController::class, 'transact']);
+    Route::get('/transactions/user/{user_id}', [TransactionController::class, 'get_transaction']);
 
     Route::resource('job_categories', JobCategoryController::class);
+    Route::resource('job_types', JobTypeController::class);
     Route::resource('recruiter_basic_infos', BasicInfoRecruiterController::class);
     Route::resource('recruiter_links', RecruiterLinkController::class);
     Route::resource('more_about_recruiters', MoreAboutRecruiterController::class);
     Route::resource('about_recruiters', AboutRecruiterController::class);
-    Route::resource('jobs', JobController::class);
     Route::resource('applications', ApplicationController::class);
     Route::resource('wallets', WalletController::class);
     Route::resource('transactions', TransactionController::class);

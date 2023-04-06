@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 
 class Job extends Model
@@ -18,30 +18,31 @@ class Job extends Model
     {
         return $query->where('type', 'like', '%'.$type.'%');
     }
+
     public function scopeSalary($query, $salary)
     {
         return $query->where( 'salary' , 'like', '%'.$salary.'%');
     }
+
     public function scopeTitle($query, $title)
     {
         return $query->where('title', 'like', '%'.$title.'%');
     }
+
     public function scopeExperienceLevel($query, $experience_level)
     {
         return $query->where('experience_level', 'like', '%'.$experience_level.'%');
     }
+
     public function scopeDatePosted($query, $date_posted)
     {
         return $query->where('created_at', 'like', '%'.$date_posted.'%');
     }
+
     public function scopeLocation($query, $location)
     {
         return $query->where('location', 'like', '%'.$location.'%');
     }
-    // public function scopeSalary($query, $salary)
-    // {
-    //     return $query->where('salary', 'like', '%'.$salary.'%');
-    // }
    
     
 
@@ -57,7 +58,6 @@ class Job extends Model
         'description',
         'salary',
         'experience_level',
-        'type',
         'no_of_hires',
         'hiring_speed',
         'own_completion',
@@ -81,6 +81,11 @@ class Job extends Model
     public function job_category(): BelongsTo
     {
         return $this->belongsTo(JobCategory::class);
+    }
+
+    public function job_types(): BelongsToMany
+    {
+        return $this->belongsToMany(JobType::class);
     }
 
     public function applications(): HasMany

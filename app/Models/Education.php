@@ -16,6 +16,8 @@ class Education extends Model
         'institution',
         'certification',
         'duration',
+        'start_date',
+        'end_date',
     ];
 
     public function user(): BelongsTo

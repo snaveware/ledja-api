@@ -40,11 +40,17 @@ class EducationController extends BaseController
             'user_id' => 'required',
             'institution' => 'required',
             'certification' => 'required',
-            'duration' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required',
         ]);
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());       
+        }
+
+        if($request->start_date > $request->end_date)
+        {
+            return $this->sendResponse([], "Your start date cannot be later than your end date!" );
         }
 
         $input = $request->all();
@@ -83,6 +89,11 @@ class EducationController extends BaseController
         //
         $education = Education::find($id);
 
+        if($request->start_date > $request->end_date)
+        {
+            return $this->sendResponse([], "Your start date cannot be later than your end date!" );
+        }
+
         $input = $request->all();
         $result = $education->update($input);
 
@@ -98,9 +109,9 @@ class EducationController extends BaseController
     public function destroy(string $id)
     {
         //
-        $education = Education::find($id);
+        $education = Education::findorFail($id);
 
-        if ($education->has('user'))
+        /* if ($education->has('user'))
         {
             $result = [];
             $message = "Cannot delete Education,it contains users";
@@ -112,7 +123,10 @@ class EducationController extends BaseController
             $message = "Education Deleted Successfully";
             $education->delete();
 
-        }
+        } */
+
+        $education->delete();
+        $message = "Education Deleted Successfully";
 
 
         return $this->sendResponse([], $message );

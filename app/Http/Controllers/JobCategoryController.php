@@ -39,6 +39,7 @@ class JobCategoryController extends BaseController
         $validator = Validator::make($request->all(), [
             'type' => 'required',
             'cost' => 'required',
+            'description' => 'nullable',
         ]);
 
         if($validator->fails()){

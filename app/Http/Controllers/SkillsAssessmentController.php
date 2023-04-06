@@ -155,7 +155,7 @@ class SkillsAssessmentController   extends BaseController
         //
         $skill_assessment = SkillsAssessment ::find($id);
 
-        if ($skill_assessment->has('user'))
+        /* if ($skill_assessment->has('user'))
         {
             $result = [];
             $message = "Cannot delete SkillsAssessment ,it contains users";
@@ -167,8 +167,10 @@ class SkillsAssessmentController   extends BaseController
             $message = "SkillsAssessment  Deleted Successfully";
             $skill_assessment->delete();
 
-        }
+        } */
 
+        $skill_assessment->delete();
+        $message = "SkillsAssessment  Deleted Successfully";
 
         return $this->sendResponse([], $message );
 

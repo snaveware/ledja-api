@@ -99,9 +99,9 @@ class SkillController extends BaseController
     public function destroy(string $id)
     {
         //
-        $skill = Skill::find($id);
+        $skill = Skill::findorFail($id);
 
-        if ($skill->has('user'))
+       /*  if ($skill->has('user'))
         {
             $result = [];
             $message = "Cannot delete Skill,it contains users";
@@ -113,8 +113,10 @@ class SkillController extends BaseController
             $message = "Skill Deleted Successfully";
             $skill->delete();
 
-        }
+        } */
 
+        $message = "Skill Deleted Successfully";
+        $skill->delete();
 
         return $this->sendResponse([], $message );
 

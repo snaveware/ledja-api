@@ -30,6 +30,7 @@ class ApplicationController extends BaseController
         $request->status = $request->status == null ? $request->merge(['status' => '']) :  $request->status;
         $input = $request->all();
         $applications = Application::with(['job', 'user'])->status($input['status'])->where('job_id', $job_id)->get();
+        // dd($applications);
         $job_apps = [];
         $job_apps_with_names = [];
         
@@ -37,10 +38,18 @@ class ApplicationController extends BaseController
         foreach($applications as $application)
         {
             // Check if there is a fname and lname filter
-            if ($request->fname != null || $request->lname != null)
+            if ($request->name != null)
             {
                 // dd($application->user->basic_info_jobseeker->fname);
-                if($request->fname == $application->user->basic_info_jobseeker->fname || $request->lname == $application->user->basic_info_jobseeker->lname )
+                // if($request->fname == $application->user->basic_info_jobseeker->fname || $request->lname == $application->user->basic_info_jobseeker->lname )
+                // dd(str_contains($application->user->basic_info_jobseeker->fname, $request->fname ));
+                if(str_contains($application->user->basic_info_jobseeker->fname, $request->name )  )
+                {
+                    $application->jobseeker_basic_info = $application->user->basic_info_jobseeker;
+                    array_push($job_apps_with_names, $application);
+                }
+
+                else if(str_contains($application->user->basic_info_jobseeker->lname, $request->name )  )
                 {
                     $application->jobseeker_basic_info = $application->user->basic_info_jobseeker;
                     array_push($job_apps_with_names, $application);
@@ -54,7 +63,7 @@ class ApplicationController extends BaseController
            
         }
 
-        if ($request->fname != null || $request->lname != null)
+        if ($request->name != null)
         {
             $job_apps = $job_apps_with_names;
             return $this->sendResponse($job_apps, "Recruiter Applications Fetched");
@@ -94,15 +103,23 @@ class ApplicationController extends BaseController
             'job_id' => 'required',
             'user_id' => 'required',
             'status' => 'nullable',
-            'cover_letter' => 'required',
-            'skills_assessment' => 'nullable',
+            'cover_letter' => 'required'
         ]);
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());       
         }
 
-        // dd(is_null($request->status));
+        // check if user has already applied for the job
+        $job_applied = Application::where('user_id', $request->user_id)
+        ->where('job_id', $request->job_id)
+        ->first();
+
+        if(!empty($job_applied))
+        {
+            return $this->sendResponse([], "User has already applied for this job!" );
+
+        }
         
         if(is_null($request->status))
         {

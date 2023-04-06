@@ -5,20 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\RecruiterLink;
+use App\Models\JobType;
 use Validator;
 use App\Http\Controllers\API\BaseController as BaseController;
 
 
-class RecruiterLinkController extends BaseController
+class JobTypeController extends BaseController
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $recruiter_links = RecruiterLink::with('user')->paginate();
-        return $this->sendResponse($recruiter_links, "Recruiter Links Fetched Successfully");
+        $job_types = JobType::with('jobs')->paginate();
+        return $this->sendResponse($job_types, "Job Types Fetched Successfully");
     }
 
     /**
@@ -37,11 +37,8 @@ class RecruiterLinkController extends BaseController
     {
         // validate fields
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
-            'websites' => 'nullable',
-            'linked_in' => 'nullable',
-            'twitter' => 'nullable',
-            'facebook' => 'nullable',
+            'title' => 'required',
+            'description' => 'nullable',
         ]);
 
         if($validator->fails()){
@@ -49,9 +46,9 @@ class RecruiterLinkController extends BaseController
         }
 
         $input = $request->all();
-        $recruiter_link = RecruiterLink::create($input);
+        $job_type = JobType::create($input);
 
-        return $this->sendResponse($recruiter_link, "Recruiter Link Created Successfully" );
+        return $this->sendResponse($job_type, "Job Type Created Successfully" );
 
 
 
@@ -63,9 +60,9 @@ class RecruiterLinkController extends BaseController
     public function show(string $id)
     {
         //
-        $recruiter_link = RecruiterLink::with('user')->find($id);
+        $job_type = JobType::with(['jobs'])->find($id);
 
-        return $this->sendResponse($recruiter_link, "Recruiter Link Found Successfully" );
+        return $this->sendResponse($job_type, "Job Type Found Successfully" );
 
 
 
@@ -85,12 +82,13 @@ class RecruiterLinkController extends BaseController
     public function update(Request $request, string $id)
     {
         //
-        $recruiter_link = RecruiterLink::find($id);
+        $job_type = JobType::find($id);
 
         $input = $request->all();
-        $result = $recruiter_link->update($input);
+        $result = $job_type->update($input);
+        $result->jobs();
 
-        return $this->sendResponse($recruiter_link, "Recruiter Link Updated Successfully" );
+        return $this->sendResponse($job_type, "Job Type Updated Successfully" );
 
 
 
@@ -102,19 +100,19 @@ class RecruiterLinkController extends BaseController
     public function destroy(string $id)
     {
         //
-        $recruiter_link = RecruiterLink::find($id);
+        $job_type = JobType::find($id);
 
-        if ($recruiter_link->has('user'))
+        if ($job_type->has('users'))
         {
             $result = [];
-            $message = "Cannot delete Recruiter Link,it contains users";
+            $message = "Cannot delete Job Type,it contains users";
         }
 
         else 
         {
             $result = [];
-            $message = "Recruiter Link Deleted Successfully";
-            $recruiter_link->delete();
+            $message = "Job Type Deleted Successfully";
+            $job_type->delete();
 
         }
 

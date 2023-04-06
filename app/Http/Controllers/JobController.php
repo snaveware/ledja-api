@@ -24,6 +24,7 @@ class JobController extends BaseController
         {
             // Get the recruiter basic info for each user
             $job->recruiter_basic_info = $job->user->basic_info_recruiter;
+            $job->more_about_recruiter = $job->user->more_about_recruiter;
         }
         return $this->sendResponse($jobs, "Jobs Fetched Successfully");
     }
@@ -47,6 +48,7 @@ class JobController extends BaseController
             'user_id' => 'required',
             'skills_assessment_id' => 'nullable',
             'job_category_id' => 'required',
+            'job_type_id' => 'required',
             'job_status' => 'required',
             'company_industry' => 'required',
             'company_sub_industry' => 'required',
@@ -55,7 +57,6 @@ class JobController extends BaseController
             'description' => 'required',
             'salary' => 'required',
             'experience_level' => 'required',
-            'type' => 'required',
             'no_of_hires' => 'required',
             'hiring_speed' => 'required',
             'own_completion' => 'required',
@@ -95,9 +96,11 @@ class JobController extends BaseController
        
         $wallet->amount = $wallet->amount - $job_category->cost;
         $wallet->save();
-        $jobs = Job::create($input);
+        $job = Job::create($input);
+        $job->job_types()->attach($input['job_type_id']);
+        $job->job_types;
 
-        return $this->sendResponse($jobs, "Jobs Created Successfully" );
+        return $this->sendResponse($job, "Jobs Created Successfully" );
 
 
 
@@ -111,6 +114,7 @@ class JobController extends BaseController
         //
         $job = Job::with(['user','job_category'])->find($id);
         $job->recruiter_basic_info = $job->user->basic_info_recruiter;
+        $job->more_about_recruiter = $job->user->more_about_recruiter;
 
         return $this->sendResponse($job, "Jobs Found Successfully" );
 
