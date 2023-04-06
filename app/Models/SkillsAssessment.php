@@ -12,9 +12,30 @@ class SkillsAssessment extends Model
 {
     use HasFactory;
 
+    // Get all assessments for a particular job
+    public function scopeJob($query, $job_id)
+    {
+        return $query->whereHas('jobs', $job_id);
+    }
+
+    public function scopeUserId($query, $user_id)
+    {
+        return $query->where('user_id', $user_id);
+    }
+
+    public function scopeTitle($query, $title)
+    {
+        return $query->where('title', 'like', '%'.$title.'%');
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function jobs(): HasMany
+    {
+        return $this->hasMany(Job::class);
     }
 
     public function questions(): HasMany
@@ -35,7 +56,6 @@ class SkillsAssessment extends Model
 
     protected $fillable = [
         'user_id',
-        'job_id',
         'title',
     ];
 }

@@ -11,21 +11,28 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wallets', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->integer('amount');
-            $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users');
+        Schema::table('skills_assessments', function (Blueprint $table) {
+            $table->dropForeign(['job_id']);
+            $table->dropColumn('job_id');
         });
     }
+
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('wallets');
+        Schema::table('skills_assessments', function (Blueprint $table) {
+            //
+        });
     }
 };
+
+
+/* 
+A job has a skills_assessment
+A skill_assessment can belong to many jobs
+
+*/

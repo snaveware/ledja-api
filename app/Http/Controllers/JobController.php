@@ -19,7 +19,7 @@ class JobController extends BaseController
      */
     public function index()
     {
-        $jobs = Job::with(['user','job_category'])->paginate();
+        $jobs = Job::with(['user', 'skills_assessment', 'job_category'])->paginate();
         foreach($jobs as $job)
         {
             // Get the recruiter basic info for each user
@@ -45,6 +45,7 @@ class JobController extends BaseController
         // validate fields
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
+            'skills_assessment_id' => 'nullable',
             'job_category_id' => 'required',
             'job_status' => 'required',
             'company_industry' => 'required',
@@ -185,7 +186,7 @@ class JobController extends BaseController
 
 
      /**
-     * Store a newly created resource in storage.
+     * Filter jobs
      */
     public function filter_jobs(Request $request)
     {

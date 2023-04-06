@@ -71,6 +71,7 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('/applications/{id}', [ApplicationController::class, 'update']);
     Route::get('/get_user_jobs/{user_id}', [JobController::class, 'get_user_jobs']);
     Route::post('/filter_jobs', [JobController::class, 'filter_jobs']);
+    Route::post('/filter_assessments', [SkillsAssessmentController::class, 'filter_assessments']);
     Route::post('/transactions/{user_id}', [TransactionController::class, 'transact']);
 
     Route::resource('job_categories', JobCategoryController::class);

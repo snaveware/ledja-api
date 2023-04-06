@@ -47,6 +47,7 @@ class Job extends Model
 
     protected $fillable = [
         'user_id',
+        'skills_assessment_id',
         'job_category_id',
         'job_status',
         'company_industry',
@@ -63,7 +64,6 @@ class Job extends Model
         'with_recommendation',
         'with_resume',
         'communication_preferences',
-        // 'skills_assessment',
         'apply_method',
         'send_to_email',
     ];
@@ -71,6 +71,11 @@ class Job extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function skills_assessment(): BelongsTo
+    {
+        return $this->belongsTo(SkillsAssessment::class);
     }
 
     public function job_category(): BelongsTo
