@@ -34,6 +34,7 @@ class RegisterController extends BaseController
                             'work_experiences',
                             'skills',
                             'education',
+                            'saved_jobs',
     ])->paginate();
         return $this->sendResponse($users, "Users Fetched Successfully");
     }
@@ -143,6 +144,7 @@ class RegisterController extends BaseController
                             'work_experiences',
                             'skills',
                             'education',
+                            'saved_jobs',
         ])->find($id);
 
         return $this->sendResponse($user, "User Found Successfully" );

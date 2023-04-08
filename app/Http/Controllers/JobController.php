@@ -48,7 +48,6 @@ class JobController extends BaseController
             'user_id' => 'required',
             'skills_assessment_id' => 'nullable',
             'job_category_id' => 'required',
-            'job_type_id' => 'required',
             'job_status' => 'required',
             'company_industry' => 'required',
             'company_sub_industry' => 'required',

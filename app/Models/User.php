@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -49,6 +50,11 @@ class User extends Authenticatable
     public function user_type():BelongsTo
     {
         return $this->belongsTo(UserType::class);
+    }
+
+    public function saved_jobs():BelongsToMany
+    {
+        return $this->belongsToMany(SavedJob::class);
     }
 
     public function basic_info_jobseeker(): HasOne

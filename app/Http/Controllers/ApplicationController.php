@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Application;
 use App\Models\SkillsAssessment;
+use App\Models\Score;
+use App\Models\Result;
 use App\Models\Message;
+use App\Models\User;
 use Validator;
 use App\Http\Controllers\API\BaseController as BaseController;
 
@@ -31,20 +34,27 @@ class ApplicationController extends BaseController
     {
         $request->status = $request->status == null ? $request->merge(['status' => '']) :  $request->status;
         $input = $request->all();
-        $applications = Application::with(['job', 'user'])->status($input['status'])->where('job_id', $job_id)->get();
-        // dd($applications);
+        $applications = Application::
+        status($input['status'])->where('job_id', $job_id)->get();
+       
         $job_apps = [];
         $job_apps_with_names = [];
         
 
         foreach($applications as $application)
         {
+            $application->assessment = SkillsAssessment::with(['user', 'jobs'])
+            ->where('user_id', $application->job->user_id)->first();
+            $application->score = Score::where('user_id', $application->user_id)
+            ->first();
+            $application->results = Result::with(['skills_assessment', 'question'])
+            ->where('user_id', $application->user_id)
+            ->get();
+            
             // Check if there is a fname and lname filter
             if ($request->name != null)
             {
-                // dd($application->user->basic_info_jobseeker->fname);
-                // if($request->fname == $application->user->basic_info_jobseeker->fname || $request->lname == $application->user->basic_info_jobseeker->lname )
-                // dd(str_contains($application->user->basic_info_jobseeker->fname, $request->fname ));
+                
                 if(str_contains($application->user->basic_info_jobseeker->fname, $request->name )  )
                 {
                     $application->jobseeker_basic_info = $application->user->basic_info_jobseeker;
@@ -91,15 +101,21 @@ class ApplicationController extends BaseController
         $request->status = $request->status == null ? $request->merge(['status' => '']) :  $request->status;
         $input = $request->all();
         $applications = Application::with(['job', 'user'])
+        ->status($input['status'])
         ->where('user_id', $jobseeker_id)
         ->get();
 
         foreach($applications as $app)
         {
             $skills_assessments = SkillsAssessment::with(['user', 'jobs', 'questions', 'scores', 'results'])
-        ->where('user_id', $app->job->user_id)->get();
+            ->where('user_id', $app->job->user_id)->get();
+            $recruiter = User::findorFail($app->job->user_id);
+            // dd($recruiter);
             $app->assessment_tests = $skills_assessments;
+            $app->recruiter_basic_infos = $recruiter->basic_info_recruiter;
         }
+
+        
         
 
         return $this->sendResponse($applications, "Jobseeker Applications Fetched");

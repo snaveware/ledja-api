@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
 
         DB::table('job_categories')->updateOrInsert([
                 'type' => 'basic',
+                'description' => 'Access to non-assessed list of applicants to interview',
                 'cost' => 5000,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -37,6 +38,7 @@ class DatabaseSeeder extends Seeder
 
         DB::table('job_categories')->updateOrInsert([
                 'type' => 'standard',
+                'description' => 'Access to shortlist of applicants to interview',
                 'cost' => 11000,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -44,6 +46,7 @@ class DatabaseSeeder extends Seeder
 
         DB::table('job_categories')->updateOrInsert([
                 'type' => 'premium',
+                'description' => 'Curated list of 10 selected candidates to interview',
                 'cost' => 20000,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -67,7 +70,48 @@ class DatabaseSeeder extends Seeder
 
         DB::table('wallets')->updateOrInsert([
             'user_id' => 2,
-            'amount' => 0,
+            'amount' => 50000,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('job_types')->updateOrInsert([
+            'title' => 'Full-time',
+            'description' => 'Full time job.',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('job_types')->updateOrInsert([
+                'title' => 'Part-time',
+                'description' => 'Part time job.',
+                'created_at' => now(),
+                'updated_at' => now(),
+        ]);
+
+        DB::table('job_types')->updateOrInsert([
+            'title' => 'Contract',
+            'description' => 'Contractual job.',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('job_types')->updateOrInsert([
+            'title' => 'Temporary',
+            'description' => 'Temporary job.',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        
+        DB::table('job_types')->updateOrInsert([
+            'title' => 'Internship',
+            'description' => 'Internship job.',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('job_types')->updateOrInsert([
+            'title' => 'Seasonal',
+            'description' => 'Seasonal job.',
             'created_at' => now(),
             'updated_at' => now(),
         ]);

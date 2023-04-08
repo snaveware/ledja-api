@@ -22,7 +22,7 @@ class MessageController extends BaseController
         //Get all messages
     }
 
-    public function get_user_message(string $user_id, string $application_id)
+    public function get_user_message(string $user_id)
     {
         // Get user 
         $user = User::findorFail($user_id);
@@ -39,24 +39,27 @@ class MessageController extends BaseController
         // Fetch latest message for user for that application
         if($is_jobseeker)
         {
-            $message = Message::where('jobseeker_id', $user_id)->where('application_id', $application_id)->latest()->first();
+            $messages = Message::where('jobseeker_id', $user_id)->get();
         }
         else{
-            $message = Message::where('recruiter_id', $user_id)->where('application_id', $application_id)->latest()->first();
+            $messages = Message::where('recruiter_id', $user_id)->get();
         }
         // Show result
-        if(!empty($message))
+        if(!empty($messages))
         {
-            // Get Application
-            $application = Application::findOrFail($application_id);
-            // Get Job
-            $job = Job::findOrFail($application->job->id);
+            foreach($messages as $message)
+            {
+                 // Get Application With Job
+                $application = Application::with(['user', 'job'])
+                ->where('user_id', $message->jobseeker_id)->first();
 
-            $message->application = $application;
-            $message->job = $job;
+                $message->application = $application;
+
+            }
+           
         }
 
-        return $this->sendResponse($message ,"Message Fetched Successfully");
+        return $this->sendResponse($messages ,"Messages Fetched Successfully");
 
     }
 

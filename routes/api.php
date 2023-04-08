@@ -30,6 +30,7 @@ use App\Http\Controllers\ScoreController;
 use App\Http\Controllers\OtherDocumentController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\SavedJobController;
 
 
 /*
@@ -68,8 +69,10 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('/basic_infos/{id}', [BasicInfoJobseekerController::class, 'update']);
     Route::post('/recruiter_basic_infos/{id}', [BasicInfoRecruiterController::class, 'update']);
     Route::post('/applications/job/{job_id}', [ApplicationController::class, 'recruiter_applications']);
-    Route::get('/applications/jobseeker/{user_id}', [ApplicationController::class, 'job_application_status']);
+    Route::post('/applications/jobseeker/{user_id}', [ApplicationController::class, 'job_application_status']);
     Route::post('/upload_jobs/{id}', [UploadJobController::class, 'update']);
+    Route::post('/saved_jobs/user/{user_id}/job/{job_id}', [SavedJobController::class, 'store']);
+    Route::get('/get_user_saved_jobs/user/{user_id}', [SavedJobController::class, 'get_user_saved_jobs']);
     Route::post('/receive_payments', [PaymentController::class, 'receive_payments']);
 
 
@@ -89,7 +92,7 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('/filter_assessments', [SkillsAssessmentController::class, 'filter_assessments']);
     Route::post('/transactions/{user_id}', [TransactionController::class, 'transact']);
     Route::get('/transactions/user/{user_id}', [TransactionController::class, 'get_transaction']);
-    Route::get('/messages/user/{user_id}/application/{application_id}', [MessageController::class, 'get_user_message']);
+    Route::get('/messages/user/{user_id}', [MessageController::class, 'get_user_message']);
 
     Route::resource('job_categories', JobCategoryController::class);
     Route::resource('job_types', JobTypeController::class);
@@ -109,6 +112,7 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::resource('answers', AnswerController::class);
     Route::resource('results', ResultController::class);
     Route::resource('scores', ScoreController::class);
+    Route::resource('saved_jobs', SavedJobController::class);
     Route::resource('other_documents', OtherDocumentController::class);
 
     // Get individual wallet for user
