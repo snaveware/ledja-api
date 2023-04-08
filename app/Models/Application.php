@@ -16,7 +16,6 @@ class Application extends Model
         'job_id',
         'cover_letter',
         'status',
-        'skills_assessment',
     ];
 
     public function scopeStatus($query, $status)

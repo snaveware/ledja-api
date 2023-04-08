@@ -29,6 +29,7 @@ use App\Http\Controllers\ResultController;
 use App\Http\Controllers\ScoreController;
 use App\Http\Controllers\OtherDocumentController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PaymentController;
 
 
 /*
@@ -67,7 +68,9 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('/basic_infos/{id}', [BasicInfoJobseekerController::class, 'update']);
     Route::post('/recruiter_basic_infos/{id}', [BasicInfoRecruiterController::class, 'update']);
     Route::post('/applications/job/{job_id}', [ApplicationController::class, 'recruiter_applications']);
+    Route::get('/applications/jobseeker/{user_id}', [ApplicationController::class, 'job_application_status']);
     Route::post('/upload_jobs/{id}', [UploadJobController::class, 'update']);
+    Route::post('/receive_payments', [PaymentController::class, 'receive_payments']);
 
 
     Route::delete('/users/{id}', [RegisterController::class, 'destroy']);

@@ -6,6 +6,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Application;
+use App\Models\SkillsAssessment;
 use App\Models\Message;
 use Validator;
 use App\Http\Controllers\API\BaseController as BaseController;
@@ -82,6 +83,26 @@ class ApplicationController extends BaseController
         }
 
         return $this->sendResponse($job_apps, "Recruiter Applications Fetched");
+
+    }
+
+    public function job_application_status(Request $request, string $jobseeker_id)
+    {
+        $request->status = $request->status == null ? $request->merge(['status' => '']) :  $request->status;
+        $input = $request->all();
+        $applications = Application::with(['job', 'user'])
+        ->where('user_id', $jobseeker_id)
+        ->get();
+
+        foreach($applications as $app)
+        {
+            $skills_assessments = SkillsAssessment::with(['user', 'jobs', 'questions', 'scores', 'results'])
+        ->where('user_id', $app->job->user_id)->get();
+            $app->assessment_tests = $skills_assessments;
+        }
+        
+
+        return $this->sendResponse($applications, "Jobseeker Applications Fetched");
 
     }
 
@@ -244,7 +265,7 @@ class ApplicationController extends BaseController
             'shortlisted' => $shortlisted,
             'hired' => $hired,
             'rejected' => $rejected,
-            
+
             'no_of_active_candidates' => $active_applications->count(),
             'no_of_awaiting_candidates' => $awaiting->count(),
             'no_of_reviewed_candidates' => $reviewed->count(),
