@@ -27,6 +27,8 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\ScoreController;
+use App\Http\Controllers\OtherDocumentController;
+use App\Http\Controllers\MessageController;
 
 
 /*
@@ -79,10 +81,12 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('/jobs/{id}', [JobController::class, 'update']);
     Route::post('/recruiter_basic_infos/{id}', [BasicInfoRecruiterController::class, 'update']);
     Route::post('/applications/{id}', [ApplicationController::class, 'update']);
+    Route::get('get_active_applications/{job_id}', [ApplicationController::class, 'get_active_applications']);
    
     Route::post('/filter_assessments', [SkillsAssessmentController::class, 'filter_assessments']);
     Route::post('/transactions/{user_id}', [TransactionController::class, 'transact']);
     Route::get('/transactions/user/{user_id}', [TransactionController::class, 'get_transaction']);
+    Route::get('/messages/user/{user_id}/application/{application_id}', [MessageController::class, 'get_user_message']);
 
     Route::resource('job_categories', JobCategoryController::class);
     Route::resource('job_types', JobTypeController::class);
@@ -91,6 +95,7 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::resource('more_about_recruiters', MoreAboutRecruiterController::class);
     Route::resource('about_recruiters', AboutRecruiterController::class);
     Route::resource('applications', ApplicationController::class);
+
     Route::resource('wallets', WalletController::class);
     Route::resource('transactions', TransactionController::class);
     Route::resource('education', EducationController::class);
@@ -101,6 +106,7 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::resource('answers', AnswerController::class);
     Route::resource('results', ResultController::class);
     Route::resource('scores', ScoreController::class);
+    Route::resource('other_documents', OtherDocumentController::class);
 
     // Get individual wallet for user
     Route::get('wallets/user/{user_id}', [WalletController::class, 'get_user_wallet']);

@@ -18,7 +18,7 @@ class UploadJobController extends BaseController
      */
     public function index()
     {
-        $upload_jobs = UploadJob::with('user')->paginate();
+        $upload_jobs = UploadJob::with(['user', 'other_documents'])->paginate();
         return $this->sendResponse($upload_jobs, "JobSeekers Upload Jobs Fetched Successfully");
     }
 
@@ -40,7 +40,6 @@ class UploadJobController extends BaseController
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'resume' => 'required',
-            'other_docs' => 'nullable'
         ]);
 
         if($validator->fails()){
@@ -57,24 +56,6 @@ class UploadJobController extends BaseController
             
         }
 
-        $other_docs_urls = [];
-        if($request->hasFile('other_docs'))
-        {
-            
-            $files = $request->file('other_docs');
-
-            foreach($files as $file)
-            {
-                $path = Storage::disk('public')->putFile('other_docs', $file);
-                $url = env('APP_URL') . Storage::url($path);
-                array_push($other_docs_urls, $url);
-            }
-
-            $result = implode(" | ", $other_docs_urls);
-            $input['other_docs_urls'] = $result;
-           
-        }
-
         $upload_job = UploadJob::create($input);
 
         return $this->sendResponse($upload_job, "Upload Jobs Created Successfully" );
@@ -87,7 +68,7 @@ class UploadJobController extends BaseController
     public function show(string $id)
     {
         //
-        $upload_jobs = UploadJob::with('user')->find($id);
+        $upload_jobs = UploadJob::with(['user', 'other_documents'])->find($id);
 
         return $this->sendResponse($upload_jobs, "Upload Jobs Found Successfully" );
 
@@ -126,24 +107,6 @@ class UploadJobController extends BaseController
             $input['resume_url'] = $url;
             
         }
-
-        $other_docs_urls = [];
-        if($request->hasFile('other_docs'))
-        {
-            
-            $files = $request->file('other_docs');
-
-            foreach($files as $file)
-            {
-                $path = Storage::disk('public')->putFile('other_docs', $file);
-                $url = env('APP_URL') . Storage::url($path);
-                array_push($other_docs_urls, $url);
-            }
-
-            $result = implode(" | ", $other_docs_urls);
-            $input['other_docs_urls'] = $result;
-            
-        }
     
         $result = $upload_jobs->update($input);
 
@@ -168,9 +131,9 @@ class UploadJobController extends BaseController
     public function destroy(string $id)
     {
         //
-        $upload_jobs = UploadJob::find($id);
+        $upload_job = UploadJob::find($id);
 
-        if ($upload_jobs->has('users'))
+       /*  if ($upload_jobs->has('users'))
         {
             $result = [];
             $message = "Cannot delete Upload Jobs,it contains users";
@@ -182,9 +145,10 @@ class UploadJobController extends BaseController
             $message = "Upload Jobs Deleted Successfully";
             $upload_jobs->delete();
 
-        }
+        } */
 
-
+        $upload_job->delete();
+        $message = "Upload Job Deleted Successfully";
         return $this->sendResponse([], $message );
 
     }

@@ -91,6 +91,11 @@ class User extends Authenticatable
         return $this->hasOne(UploadJob::class);
     }
 
+    public function other_documents(): HasMany
+    {
+        return $this->hasMany(OtherDocument::class);
+    }
+
     public function education(): HasMany
     {
         return $this->hasMany(Education::class);

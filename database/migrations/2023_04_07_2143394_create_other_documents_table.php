@@ -11,10 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('job_job_type', function (Blueprint $table) {
-            $table->unsignedBigInteger('job_id');
-            $table->unsignedBigInteger('job_type_id');
+        Schema::create('other_documents', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id');
+            $table->foreignId('upload_job_id')->nullable();
+            $table->longText('document');
+            $table->longText('document_url')->nullable();
             $table->timestamps();
+
         });
     }
 
@@ -23,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('job_job_type');
+        Schema::dropIfExists('other_documents');
     }
 };

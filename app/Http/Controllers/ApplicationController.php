@@ -6,6 +6,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Application;
+use App\Models\Message;
 use Validator;
 use App\Http\Controllers\API\BaseController as BaseController;
 
@@ -169,8 +170,27 @@ class ApplicationController extends BaseController
 
         $input = $request->all();
         $result = $application->update($input);
+        $response = [
+            "recruiter_message" => "You have updated the status for the application to {$application->status}",
+            "jobseeker_message" => "Your application status has been set to {$application->status}"
+        ];
 
-        return $this->sendResponse($application, "Application Updated Successfully" );
+        // Add status to messages table.
+        $message = [];
+        $message['recruiter_id'] = $application->job->user_id; 
+        $message['jobseeker_id'] = $application->user_id; 
+        $message['application_id'] = $application->id; 
+        $message['job_id'] = $application->job->id; 
+        $message['status'] = $application->status;
+        $message['recruiter_message'] = "You have updated the status for the application to {$application->status}";
+        $message['jobseeker_message'] = $application->status == "shortlisted" ?
+        "You've been shortlisted, please check your email for next steps" :
+        "Your application status has been set to {$application->status} ";
+
+        $my_message = Message::create($message);
+        $application->message = $my_message;
+
+        return $this->sendResponse($application, $response );
 
 
 
@@ -201,5 +221,39 @@ class ApplicationController extends BaseController
 
         return $this->sendResponse([], $message );
 
+    }
+
+
+    public function get_active_applications(string $job_id)
+    {
+        $active_applications = Application::where('job_id', $job_id)->get();
+        $no_active_applications = $active_applications->count();
+
+        $awaiting = Application::where('status', 'awaiting')->get();
+        $reviewed = Application::where('status', 'reviewed')->get();
+        $contacting = Application::where('status', 'contacting')->get();
+        $shortlisted = Application::where('status', 'shortlisted')->get();
+        $hired = Application::where('status', 'hired')->get();
+        $rejected = Application::where('status', 'rejected')->get();
+
+        $applications = [
+            'applications' => $active_applications,
+            'awaiting' => $awaiting,
+            'reviewed' => $reviewed,
+            'contacting' => $contacting,
+            'shortlisted' => $shortlisted,
+            'hired' => $hired,
+            'rejected' => $rejected,
+            
+            'no_of_active_candidates' => $active_applications->count(),
+            'no_of_awaiting_candidates' => $awaiting->count(),
+            'no_of_reviewed_candidates' => $reviewed->count(),
+            'no_of_contacting_candidates' => $contacting->count(),
+            'no_of_shortlisted_candidates' => $shortlisted->count(),
+            'no_of_hired_candidates' => $hired->count(),
+            'no_of_rejected_candidates' => $rejected->count(),
+        ];
+
+        return $this->sendResponse($applications, "Active Applications Fetched");
     }
 }
