@@ -15,7 +15,9 @@ class Score extends Model
         'skills_assessment_id',
         'user_id',
         'score',
-        'rating'
+        'rating',
+        'out_of',
+        'rank',
     ];
 
     public function user(): BelongsTo

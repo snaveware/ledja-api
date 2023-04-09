@@ -40,10 +40,17 @@ class MessageController extends BaseController
         if($is_jobseeker)
         {
             $messages = Message::where('jobseeker_id', $user_id)->get();
+            $unread = $messages->where('has_jobseeker_read', false)->count();
+            $read = $messages->where('has_jobseeker_read', true)->count();
         }
+
         else{
             $messages = Message::where('recruiter_id', $user_id)->get();
+            $unread = $messages->where('has_recruiter_read', false)->count();
+            $read = $messages->where('has_recruiter_read', true)->count();
+            
         }
+
         // Show result
         if(!empty($messages))
         {
@@ -59,7 +66,19 @@ class MessageController extends BaseController
            
         }
 
-        return $this->sendResponse($messages ,"Messages Fetched Successfully");
+        // dd(gettype($messages));
+        // $messages["unread_messages"] = $unread;
+        // $messages["read_messages"] = $read;
+
+        $data = [
+            "messages" => $messages,
+            
+            "unread_messages" => $unread,
+            "read_messages" => $read
+        ];
+
+
+        return $this->sendResponse($data ,"Messages Fetched Successfully");
 
     }
 
@@ -98,9 +117,15 @@ class MessageController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Message $message): RedirectResponse
+    public function update(Request $request, string $id)
     {
-        //
+
+        $message = Message::findOrFail($id);
+        $input = $request->all();
+        $message->update($input);
+
+        return $this->sendResponse($message, "Message Updated Successfully" );
+
     }
 
     /**

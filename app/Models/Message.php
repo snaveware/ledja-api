@@ -16,6 +16,8 @@ class Message extends Model
         'job_id',
         'status',
         'recruiter_message',
-        'jobseeker_message'
+        'jobseeker_message',
+        'has_jobseeker_read',
+        'has_recruiter_read'
     ];
 }

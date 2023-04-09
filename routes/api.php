@@ -114,6 +114,7 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::resource('scores', ScoreController::class);
     Route::resource('saved_jobs', SavedJobController::class);
     Route::resource('other_documents', OtherDocumentController::class);
+    Route::resource('messages', MessageController::class);
 
     // Get individual wallet for user
     Route::get('wallets/user/{user_id}', [WalletController::class, 'get_user_wallet']);
@@ -123,5 +124,6 @@ Route::middleware('auth:sanctum')->group( function () {
 
     // Get score for the user
     Route::get('get_score/{user_id}/test/{test_id}', [ ScoreController::class, 'get_score' ]);
+    Route::get('calculate_scores/{test_id}', [ ScoreController::class, 'calculate_scores' ]);
 
 });
