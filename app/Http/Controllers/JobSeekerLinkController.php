@@ -39,7 +39,7 @@ class JobSeekerLinkController extends BaseController
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'websites' => 'nullable',
-            'linked_in' => 'required',
+            'linked_in' => 'nullable',
             'twitter' => 'nullable',
             'facebook' => 'nullable'
         ]);

@@ -20,6 +20,7 @@ class WorkExperience extends Model
         'tasks',
         'start_date',
         'end_date',
+        'is_current_position',
     ];
 
     public function user(): BelongsTo

@@ -40,11 +40,11 @@ class WorkExperienceController extends BaseController
             'user_id' => 'required',
             'title' => 'required',
             'company' => 'required',
-            // 'duration' => 'required',
             'start_date' => 'required',
             'end_date' => 'required',
             'description' => 'nullable',
             'tasks' => 'nullable',
+            'is_current_position' => 'nullable',
         ]);
 
         if($validator->fails()){

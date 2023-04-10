@@ -161,6 +161,8 @@ class SavedJobController extends BaseController
     public function get_user_saved_jobs(string $user_id)
     {
         $user_saved_jobs = User::findorFail($user_id)->saved_jobs()->get();
+        // return $this->sendResponse($user_saved_jobs, "Saved User Jobs Found Successfully" );
+
         $jobs_saved = [];
         
         foreach($user_saved_jobs as $saved_job)

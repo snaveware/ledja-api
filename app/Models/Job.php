@@ -85,7 +85,7 @@ class Job extends Model
 
     public function job_types(): BelongsToMany
     {
-        return $this->belongsToMany(SavedJob::class);
+        return $this->belongsToMany(JobType::class);
     }
 
     public function saved_jobs(): BelongsToMany
