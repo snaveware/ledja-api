@@ -126,4 +126,10 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::get('get_score/{user_id}/test/{test_id}', [ ScoreController::class, 'get_score' ]);
     Route::get('calculate_scores/{test_id}', [ ScoreController::class, 'calculate_scores' ]);
 
+
+    /* PAYPAL INTEGRATION */
+    Route::get('payment', 'PayPalController@payment')->name('payment');
+    Route::get('cancel', 'PayPalController@cancel')->name('payment.cancel');
+    Route::get('payment/success', 'PayPalController@success')->name('payment.success');
+
 });

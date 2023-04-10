@@ -56,9 +56,33 @@ class SavedJobController extends BaseController
                     if($job->id == $job_id)
                     {
                         $is_job_saved = true;
+                        $input = $request->all();
+
+                        if($request->status == 'deleted')
+                        {
+                            $saved_job->update($input);
+                            return $this->sendResponse([], "Exisiting Saved Job has been unsaved." );
+
+                        }
+
+                        if($request->status == 'saved')
+                        {
+                            $saved_job->update($input);
+                            return $this->sendResponse([], "Job has been saved." );
+
+                        }
                     }
+
+                    
                 }
             }
+        }
+
+        if($is_job_saved && $request->status == 'deleted')
+        {
+            // update job status
+            return $this->sendResponse([], "Job Was Already Saved,Please Save Another Job" );
+
         }
 
         if($is_job_saved)
@@ -146,7 +170,14 @@ class SavedJobController extends BaseController
             {
                 if($my_id== $user_id)
                 {
-                    array_push($jobs_saved, $my_saved_job);
+                    if ($saved_job->status != 'deleted')
+                    {
+                        array_push($jobs_saved, [
+                            'saved_job' => $saved_job,
+                            'the_job' => $my_saved_job,
+                        ]);
+                    }
+                   
                 }
             }
         }
