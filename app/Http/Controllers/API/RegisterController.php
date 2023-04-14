@@ -198,32 +198,32 @@ class RegisterController extends BaseController
 
     // Forgot Password Api
     public function forgot_password(Request $request)
-{
-    $input = $request->all();
-    $rules = array(
-        'email' => "required|email",
-    );
-    $validator = Validator::make($input, $rules);
-    if ($validator->fails()) {
-        $arr = array("status" => 400, "message" => $validator->errors()->first(), "data" => array());
-    } else {
-        try {
-            $response = Password::sendResetLink($request->only('email'), function (Message $message) {
-                $message->subject($this->getEmailSubject());
-            });
-            switch ($response) {
-                case Password::RESET_LINK_SENT:
-                    return \Response::json(array("status" => 200, "message" => trans($response), "data" => array()));
-                case Password::INVALID_USER:
-                    return \Response::json(array("status" => 400, "message" => trans($response), "data" => array()));
-            }
-        } catch (\Swift_TransportException $ex) {
-            $arr = array("status" => 400, "message" => $ex->getMessage(), "data" => []);
-        } catch (Exception $ex) {
-            $arr = array("status" => 400, "message" => $ex->getMessage(), "data" => []);
-        }
+    {
+        $input = $request->all();
+        $rules = array(
+            'email' => "required|email",
+        );
+        $validator = Validator::make($input, $rules);
+        // Send email to user
+        // Notify user that email has been sent
     }
-    return \Response::json($arr);
-}
+
+    public function reset_password(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => 'required',
+            'confirm_password' => 'required|same:password',
+        ]);
+   
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());       
+        }
+        $input = $request->only('password');
+        $input['password'] = bcrypt($input['password']);
+        $user = User::where('email', $request->email)->first();
+        $user->update($input);
+
+        return $this->sendResponse($user, "Password Reset Successfull" );
+    }
 
 }

@@ -31,6 +31,7 @@ use App\Http\Controllers\OtherDocumentController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SavedJobController;
+use App\Http\Controllers\MailController;
 
 
 /*
@@ -58,10 +59,18 @@ Route::post('/filter_jobs', [JobController::class, 'filter_jobs']);
 /* Make jobs accessible everywhere */
 Route::get('/users', [RegisterController::class, 'index']);
 Route::get('/users/{id}', [RegisterController::class, 'show']);
+Route::post('reset_password', [RegisterController::class, 'reset_password']);
 
+Route::post('send_password_reset_mail',[MailController::class, 'store']);
+Route::get('sendbasicemail',[MailController::class, 'basic_email']);
+Route::get('sendhtmlemail',[MailController::class, 'html_email']);
+Route::get('sendattachmentemail',[MailController::class, 'attachment_email']);
 
 
 Route::post('send_reset_link', [PasswordResetLinkController::class, 'store']);
+
+Route::get('/payments/success', [PaymentController::class, 'success']);
+
 
 
 Route::middleware('auth:sanctum')->group( function () {
@@ -73,7 +82,16 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('/upload_jobs/{id}', [UploadJobController::class, 'update']);
     Route::post('/saved_jobs/user/{user_id}/job/{job_id}', [SavedJobController::class, 'store']);
     Route::get('/get_user_saved_jobs/user/{user_id}', [SavedJobController::class, 'get_user_saved_jobs']);
+
+    // PAYMENT ENDPOINTS
+    Route::post('send_sms', [PaymentController::class, 'intiate_payment']);
     Route::post('/receive_payments', [PaymentController::class, 'receive_payments']);
+    Route::post('/intiate_payment', [PaymentController::class, 'intiate_payment']);
+    Route::post('/authorize_payment', [PaymentController::class, 'authorize_charge']);
+    Route::post('/verify_payment/{transaction_id}', [PaymentController::class, 'verify_payment']);
+    Route::post('/mpesa_pay', [PaymentController::class, 'mpesa_pay']);
+    Route::post('/stk_push', [PaymentController::class, 'stk_push']);
+
 
 
     Route::delete('/users/{id}', [RegisterController::class, 'destroy']);

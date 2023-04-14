@@ -56,11 +56,15 @@ return [
             // ],
         ],
 
-        'postmark' => [
-            'transport' => 'postmark',
+        // 'postmark' => [
+        //     'transport' => 'postmark',
             // 'client' => [
             //     'timeout' => 5,
             // ],
+        // ],
+
+        'postmark' => [
+            'token' => env('POSTMARK_TOKEN'),
         ],
 
         'sendmail' => [
