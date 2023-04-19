@@ -42,6 +42,7 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->renderable(function (Throwable $e) {
+             
                 return response()->json([
                     'success' => false,
                     'data' => [],

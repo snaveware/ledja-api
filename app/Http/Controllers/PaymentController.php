@@ -376,7 +376,7 @@ class PaymentController extends BaseController
         $token = env('SECRET_KEY');
         $headers = [
             'Authorization' => 'Bearer '. $token,
-            'Content-Type' => 'application/json'
+            // 'Content-Type' => 'application/json'
         ];
         $client = new Client([
             'headers' => $headers
@@ -386,17 +386,26 @@ class PaymentController extends BaseController
 
 
 
+        // dd($payload);
         $encrypted_payload = $this->encrypt($key, $payload);
 
-        // dd($encrypted_payload);
+        // dd($request);
 
-       
+       try
+       {
 
         $response = $client->request('POST', $base_uri, [
-
             'json' => [ 'client' => $encrypted_payload]
-            // 'json' => [ 'client' => $encrypted_payload]
         ]);
+
+       }
+
+       catch (\Guzzle\Http\Exception\BadResponseException $e)
+       {
+            return $e;
+       }
+
+        
 
 
         return $response;
@@ -412,33 +421,64 @@ class PaymentController extends BaseController
     {
         // Install with: composer require flutterwavedev/flutterwave-v3
         $user = \Auth::user();
+        $wallet = $user->wallet;
 
         $mpesaService = new \Flutterwave\Service\Mpesa();
         $payloadService = new \Flutterwave\Service\Payload();
-        $payload = [
+       /*  $payload = [
             "phone_number" => $request->phone_number,
             "amount" => $request->amount,
             "currency" => 'KES',
             "email" => $user->email,
-            "tx_ref" => 'LDJ-'.uniqid()
-        ];
+            "fullname" => $request->fullname,
+            "tx_ref" => 
+        ]; */
+
+        // dd($request->all());
 
         // $response = $mpesaService($payload);
         // dd($response);
+        $payload = $request->all();
+        $payload['tx_ref'] = 'LDJ-'.uniqid();
+        // dd($payload);
+
+        $response = $this->mpesa_safcom($payload, 'https://api.flutterwave.com/v3/charges?type=mpesa'); 
+        $res = json_decode($response->getBody());
+        // dd($res);
 
 
-        $response = $this->charge_customer($payload, 'https://api.flutterwave.com/v3/charges?type=mpesa'); 
-        dd("here");
-        $data = json_decode($response->getBody()->getContents());
+        if($res->status == 'success')
+        {
+            // Success! Confirm the customer's payment
+            // Create Transaction
+            $amount_credited = $res->data->charged_amount - $res->data->app_fee;
+            // dd($amount_credited);
+
+            $transaction_payload = [
+                'type' => 'credit',
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'trx_ref' => $res->data->tx_ref,
+                'payment_mode' => 'mpesa',
+                'mobile_no' => $res->data->customer->phone_number,
+                'trx_status' =>  $res->data->status,
+                'amount' => $amount_credited,
+            ];
+
+            $transaction = Transaction::create($transaction_payload);
+
+            // Add amount to wallet
+            $wallet = $transaction->wallet;
+            $wallet->amount += $transaction->amount;
+            $wallet->save();
+        }
 
         return response()->json([
-            'data' => $response,
+            'data' => $res,
             'status_code' => 200
         ]);
 
-        // $the_payload = $payloadService->create($payload);
-        // $response = $mpesaService->initiate($the_payload);
-        // print_r($response);
+        
     }
 
 
@@ -460,14 +500,15 @@ class PaymentController extends BaseController
     
     
     
-            $encrypted_payload = $this->encrypt($key, $payload);
+            // $encrypted_payload = $this->encrypt($key, $payload);
     
             // dd($encrypted_payload);
     
            
     
             $response = $client->request('POST', $base_uri, [
-                'json' => [ 'client' => $encrypted_payload]
+                // 'json' => [ 'client' => $encrypted_payload]
+                'json' =>  $payload
             ]);
     
     
