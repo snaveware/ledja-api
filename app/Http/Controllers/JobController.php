@@ -64,6 +64,7 @@ class JobController extends BaseController
             'communication_preferences' => 'required',
             'apply_method' => 'required',
             'send_to_email' => 'required',
+            'job_type_ids' => 'required',
             // 'skills_assessment' => 'nullable',
         ]);
 
@@ -96,7 +97,11 @@ class JobController extends BaseController
         $wallet->amount = $wallet->amount - $job_category->cost;
         $wallet->save();
         $job = Job::create($input);
-        $job->job_types()->attach($input['job_type_id']);
+        $job_type_ids = explode(",", $input['job_type_ids']);
+        foreach($job_type_ids as  $key => $value )
+        {
+            $job->job_types()->attach($value);
+        }
         $job->job_types;
 
         return $this->sendResponse($job, "Jobs Created Successfully" );
