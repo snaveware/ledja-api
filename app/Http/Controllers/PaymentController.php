@@ -340,6 +340,8 @@ class PaymentController extends BaseController
             $wallet->amount = $response->data->amount_settled;
             $wallet->save();
 
+            $response->wallet = $wallet;
+
             return response()->json([
                 'data' => $response,
                 'status_code' => 200
@@ -471,6 +473,7 @@ class PaymentController extends BaseController
             $wallet = $transaction->wallet;
             $wallet->amount += $transaction->amount;
             $wallet->save();
+            $res->wallet = $wallet;
         }
 
         return response()->json([
