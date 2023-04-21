@@ -337,7 +337,7 @@ class PaymentController extends BaseController
 
             // Add amount to wallet
             $wallet = $transaction->wallet;
-            $wallet->amount = $response->data->amount_settled;
+            $wallet->amount += $response->data->amount_settled;
             $wallet->save();
 
             $response->wallet = $wallet;
