@@ -37,7 +37,6 @@ class Transaction extends Model
 
     public function routeNotificationForVonage(Notification $notification): string
     {
-        // return "";
         return $this->mobile_no;
 
     }
