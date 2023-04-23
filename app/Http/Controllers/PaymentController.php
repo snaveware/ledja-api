@@ -61,7 +61,19 @@ class PaymentController extends BaseController
 
         // Set new Transaction ref
         $payload['tx_ref'] = 'LDJ-'.uniqid();
-        $response = $this->charge_customer($payload, 'https://api.flutterwave.com/v3/charges?type=card');
+        try {
+            $response =  $this->charge_customer($payload, 'https://api.flutterwave.com/v3/charges?type=card');
+
+        }
+
+        catch (\GuzzleHttp\Exception\ClientException $e)
+        {
+            return response()->json([
+                'success' => false,
+                'error' => 'Something went wrong!,please contact your bank for further details'
+            ]);
+        }
+
         $data = json_decode($response->getBody()->getContents());
 
         if($response->getStatusCode() == 200)
@@ -331,6 +343,14 @@ class PaymentController extends BaseController
             // Success! Confirm the customer's payment
             // Change status to successful in transaction
             $transaction = Transaction::where('trx_id', $transaction_id)->first();
+
+            if($transaction->trx_status == 'successful')
+            {
+                return response()->json([
+                    'data' => 'Transaction has already been verified,please verify another transaction!',
+                    'status_code' => 200
+                ]);
+            }
             $transaction->trx_status = $response->data->status;
             $transaction->amount = $response->data->amount;
             $transaction->save();

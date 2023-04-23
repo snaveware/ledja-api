@@ -14,9 +14,49 @@ class Job extends Model
 {
     use HasFactory;
 
-    public function scopeType($query, $type)
+    public function scopeJobTypes($query, $types)
     {
-        return $query->where('type', 'like', '%'.$type.'%');
+        
+        $all_types = [];
+        $types = explode(",", $types);
+       
+        $query->whereHas('job_types', function($q) use ($types) {
+                    if (count($types) > 0 )
+                    {
+                      
+                            if(count($types) == 1)
+                            {
+                                
+                                return $q->where('title', 'LIKE', '%'.$types[0].'%');
+                                
+                            }
+
+                            if(count($types) == 2)
+                            {
+                                
+                                return $q->where('title', 'LIKE', '%'.$types[0].'%')
+                                            ->orWhere('title', 'LIKE', '%'.$types[1].'%') ;
+                                
+                            }
+
+                            if(count($types) == 3)
+                            {
+                                return $q->where('title', 'LIKE', '%'.$types[0].'%')
+                                ->orWhere('title', 'LIKE', '%'.$types[1].'%') 
+                                ->orWhere('title', 'LIKE', '%'.$types[2].'%'); 
+                                
+                            }
+
+                            if(count($types) > 3)
+                            {
+                                return $q->where('title', 'LIKE', '%'.$types[0].'%')
+                                ->orWhere('title', 'LIKE', '%'.$types[1].'%') 
+                                ->orWhere('title', 'LIKE', '%'.$types[2].'%'); 
+                                
+                            }                
+                    }
+
+                });
     }
 
     public function scopeSalary($query, $salary)

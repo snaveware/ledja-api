@@ -182,7 +182,7 @@ class JobController extends BaseController
     public function get_user_jobs(string $user_id)
     {
         //
-        $jobs = Job::with(['user','job_category'])->where('user_id', $user_id)->get();
+        $jobs = Job::with(['user','job_category','job_types'])->where('user_id', $user_id)->get();
 
         return $this->sendResponse($jobs, "User Jobs Found Successfully" );
 
@@ -208,7 +208,7 @@ class JobController extends BaseController
             'description' => 'nullable',
             'salary' => 'nullable',
             'experience_level' => 'nullable',
-            'type' => 'nullable',
+            'job_types' => 'nullable',
         ]);
 
         if($validator->fails()){
@@ -219,7 +219,8 @@ class JobController extends BaseController
 
         // Filter jobs by field
 
-        $jobs = Job::type($input['type'])
+        $jobs = Job::with(['user','job_category','job_types'])
+        ->JobTypes($input['job_types'])
         ->salary($input['salary'])
         ->title($input['title'])
         ->title($input['location'])

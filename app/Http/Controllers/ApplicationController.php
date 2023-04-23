@@ -227,6 +227,14 @@ class ApplicationController extends BaseController
         $my_message = Message::create($message);
         $application->message = $my_message;
 
+        // for this application,get the job,get the skills assessment then you cna get the score
+        $job = $application->job;
+        $skills_test = $job->skills_assessment;
+        $scores = $skills_test->scores;
+
+        $application->scores = $scores;
+        
+
         return $this->sendResponse($application, $response );
 
 
@@ -266,12 +274,12 @@ class ApplicationController extends BaseController
         $active_applications = Application::where('job_id', $job_id)->get();
         $no_active_applications = $active_applications->count();
 
-        $awaiting = Application::where('status', 'awaiting')->get();
-        $reviewed = Application::where('status', 'reviewed')->get();
-        $contacting = Application::where('status', 'contacting')->get();
-        $shortlisted = Application::where('status', 'shortlisted')->get();
-        $hired = Application::where('status', 'hired')->get();
-        $rejected = Application::where('status', 'rejected')->get();
+        $awaiting = Application::where('status', 'awaiting')->where('job_id', $job_id)->get();
+        $reviewed = Application::where('status', 'reviewed')->where('job_id', $job_id)->get();
+        $contacting = Application::where('status', 'contacting')->where('job_id', $job_id)->get();
+        $shortlisted = Application::where('status', 'shortlisted')->where('job_id', $job_id)->get();
+        $hired = Application::where('status', 'hired')->where('job_id', $job_id)->get();
+        $rejected = Application::where('status', 'rejected')->where('job_id', $job_id)->get();
 
         $applications = [
             'applications' => $active_applications,
