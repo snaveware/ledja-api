@@ -34,10 +34,10 @@ services:
 
         labels:
             - "traefik.enable=true"
+            - traefik.http.routers.backend.entrypoints=web,web-secure
             - "traefik.http.routers.frontend.rule=Host(`direktory.biz`)"
             - "traefik.http.routers.frontend.tls=true"
       
-
     db:
         image: mysql:8.0
         container_name: db
