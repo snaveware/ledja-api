@@ -34,7 +34,7 @@ services:
 
         labels:
             - "traefik.enable=true"
-            - traefik.http.routers.backend.entrypoints=web,web-secure
+            - traefik.http.routers.frontend.entrypoints=web,web-secure
             - "traefik.http.routers.frontend.rule=Host(`direktory.biz`)"
             - "traefik.http.routers.frontend.tls=true"
       
