@@ -64,6 +64,7 @@ services:
         - --providers.docker=true
         - --providers.file.directory=/configuration/
         - --providers.file.watch=true
+        
 
         # restart: on-failure
         ports:
