@@ -14,6 +14,7 @@ services:
             - db
         labels:
             - "traefik.enable=true"
+            - traefik.http.routers.backend.entrypoints=web,web-secure
             - "traefik.http.routers.backend.rule=Host(`api.direktory.biz`)"
             - "traefik.http.routers.backend.tls=true"
             
