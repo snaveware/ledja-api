@@ -59,7 +59,7 @@ services:
         command:
         - --entrypoints.web.address=:80
         - --entrypoints.web-secure.address=:443
-        - --entrypoints.web.http.redirections.entryPoint.to=websecure
+        - --entrypoints.web.http.redirections.entryPoint.to=web-secure
         - --entrypoints.web.http.redirections.entryPoint.scheme=https
         - --entrypoints.web.http.redirections.entrypoint.permanent=true
         - --providers.docker=true
