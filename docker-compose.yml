@@ -58,13 +58,12 @@ services:
         command:
         - --entrypoints.web.address=:80
         - --entrypoints.web-secure.address=:443
-        - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
-        - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
-        - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+        - --entrypoints.web.http.redirections.entryPoint.to=websecure
+        - --entrypoints.web.http.redirections.entryPoint.scheme=https
+        - --entrypoints.web.http.redirections.entrypoint.permanent=true
         - --providers.docker=true
         - --providers.file.directory=/configuration/
         - --providers.file.watch=true
-        
 
         # restart: on-failure
         ports:
