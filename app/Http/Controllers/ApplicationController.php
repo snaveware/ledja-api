@@ -11,8 +11,11 @@ use App\Models\Score;
 use App\Models\Result;
 use App\Models\Message;
 use App\Models\User;
+use App\Models\Job;
 use Validator;
 use App\Http\Controllers\API\BaseController as BaseController;
+use App\Mail\Shortlisted;
+use Mail;
 
 
 class ApplicationController extends BaseController
@@ -226,12 +229,28 @@ class ApplicationController extends BaseController
             $message['jobseeker_message'] = "Your application is under review";
         }
 
+        if($message['status'] == 'shortlisted')
+        {
+            $message['jobseeker_message'] = "You've been shortlisted, please check your email for next steps";
+            $email_data = [];
+            // get user
+            $user = User::where('id', $application->user->id)->first();
+            $user->basic_info_jobseeker;
+            array_push($email_data, ['user' => $user]);
+            // get job
+            $job = Job::where('id', $application->job->id)->first();
+            array_push($email_data, ['job' => $job]);
+
+            // send email
+            Mail::to('talimwakesi@gmail.com')->send(new Shortlisted($email_data));
+            $message['recruiter_message'] = "You have updated the status for the application to {$application->status}";
+
+        }
+
         else 
         {
             $message['recruiter_message'] = "You have updated the status for the application to {$application->status}";
-            $message['jobseeker_message'] = $application->status == "shortlisted" ?
-            "You've been shortlisted, please check your email for next steps" :
-            "Your application status has been set to {$application->status} ";
+            $message['jobseeker_message'] = "Your application status has been set to {$application->status} ";
         }
        
         $my_message = Message::create($message);

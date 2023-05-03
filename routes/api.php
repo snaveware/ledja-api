@@ -32,6 +32,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SavedJobController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\CompanyController;
 
 
 /*
@@ -136,6 +137,7 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::resource('saved_jobs', SavedJobController::class);
     Route::resource('other_documents', OtherDocumentController::class);
     Route::resource('messages', MessageController::class);
+    Route::resource('companies', CompanyController::class);
 
     // Get individual wallet for user
     Route::get('wallets/user/{user_id}', [WalletController::class, 'get_user_wallet']);

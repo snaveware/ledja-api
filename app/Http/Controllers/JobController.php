@@ -19,7 +19,7 @@ class JobController extends BaseController
      */
     public function index()
     {
-        $jobs = Job::with(['user', 'skills_assessment', 'job_category', 'job_types'])->latest()->paginate();
+        $jobs = Job::with(['user', 'skills_assessment', 'company', 'job_category', 'job_types'])->latest()->paginate();
         foreach($jobs as $job)
         {
             // Get the recruiter basic info for each user
@@ -48,6 +48,7 @@ class JobController extends BaseController
             'user_id' => 'required',
             'skills_assessment_id' => 'nullable',
             'job_category_id' => 'required',
+            'company_id' => 'nullable',
             'category' => 'required',
             'job_status' => 'required',
             'company_industry' => 'required',
@@ -55,7 +56,7 @@ class JobController extends BaseController
             'title' => 'required',
             'location' => 'required',
             'description' => 'required',
-            'salary' => 'required',
+            'salary' => 'nullable',
             'experience_level' => 'required',
             'no_of_hires' => 'required',
             'hiring_speed' => 'required',
@@ -84,10 +85,6 @@ class JobController extends BaseController
         // Get job category
         $job_category = JobCategory::find($input['job_category_id']);
         $wallet = Wallet::where('user_id', $input['user_id'])->first();
-        // dd($wallet->amount < $job_category->cost);
-        // dd($job_category->cost);
-        // dd($wallet->amount);
-        // Deduct cost from wallet
         if ($wallet->amount < $job_category->cost)
         {
             // Inform user if recruiter doesn't have the funds
@@ -107,8 +104,6 @@ class JobController extends BaseController
 
         return $this->sendResponse($job, "Jobs Created Successfully" );
 
-
-
     }
 
     /**
@@ -117,7 +112,7 @@ class JobController extends BaseController
     public function show(string $id)
     {
         //
-        $job = Job::with(['user','job_category', 'job_types'])->find($id);
+        $job = Job::with(['user', 'company', 'job_category', 'job_types'])->find($id);
         $job->recruiter_basic_info = $job->user->basic_info_recruiter;
         $job->more_about_recruiter = $job->user->more_about_recruiter;
 
@@ -183,7 +178,7 @@ class JobController extends BaseController
     public function get_user_jobs(string $user_id)
     {
         //
-        $jobs = Job::with(['user','job_category','job_types'])->where('user_id', $user_id)->latest()->paginate(30);
+        $jobs = Job::with(['user','company','job_category','job_types'])->where('user_id', $user_id)->latest()->paginate(30);
 
         return $this->sendResponse($jobs, "User Jobs Found Successfully" );
 
@@ -220,7 +215,7 @@ class JobController extends BaseController
 
         // Filter jobs by field
 
-        $jobs = Job::with(['user','job_category','job_types'])
+        $jobs = Job::with(['user', 'company','job_category','job_types'])
         ->JobTypes($input['job_types'])
         ->salary($input['salary'])
         ->title($input['title'])

@@ -90,6 +90,7 @@ class Job extends Model
         'user_id',
         'skills_assessment_id',
         'job_category_id',
+        'company_id',
         'job_status',
         'category',
         'company_industry',
@@ -112,6 +113,11 @@ class Job extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
     }
 
     public function skills_assessment(): BelongsTo
