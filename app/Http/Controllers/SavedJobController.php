@@ -13,6 +13,8 @@ use App\Models\User;
 use App\Models\Job;
 use Validator;
 use App\Http\Controllers\API\BaseController as BaseController;
+use App\Helpers\Utilities;
+
 
 
 class SavedJobController extends BaseController
@@ -22,7 +24,7 @@ class SavedJobController extends BaseController
      */
     public function index()
     {
-        $saved_jobs = SavedJob::with(['jobs', 'users'])->paginate();
+        $saved_jobs = SavedJob::with(['jobs', 'users'])->latest()->paginate();
         return $this->sendResponse($saved_jobs, "Jobs Fetched Successfully");
     }
 
@@ -160,7 +162,7 @@ class SavedJobController extends BaseController
      */
     public function get_user_saved_jobs(string $user_id)
     {
-        $user_saved_jobs = User::findorFail($user_id)->saved_jobs()->get();
+        $user_saved_jobs = User::findorFail($user_id)->saved_jobs()->latest()->get();
         // return $this->sendResponse($user_saved_jobs, "Saved User Jobs Found Successfully" );
 
         $jobs_saved = [];
@@ -174,9 +176,15 @@ class SavedJobController extends BaseController
                 {
                     if ($saved_job->status != 'deleted')
                     {
+                        // get user
+                        $user = $my_saved_job->user;
+                        $basic_info_recruiter = $user->basic_info_recruiter;
+                        $job_types = $my_saved_job->job_types;
                         array_push($jobs_saved, [
                             'saved_job' => $saved_job,
                             'the_job' => $my_saved_job,
+                            'basic_info_recruiter' => $basic_info_recruiter,
+                            'job_types' => $job_types,
                         ]);
                     }
                    
@@ -188,7 +196,11 @@ class SavedJobController extends BaseController
 
         // $user_saved_jobs->jobs_saved = $jobs_saved;
 
-        return $this->sendResponse($jobs_saved, "Saved User Jobs Found Successfully" );
+        $utility = new Utilities();
+        $path = url('api/get_user_saved_jobs/user');
+        $paginate = $utility->paginate($jobs_saved, $user_id, $path);
+
+        return $this->sendResponse($paginate, "Saved User Jobs Found Successfully" );
 
     }
 

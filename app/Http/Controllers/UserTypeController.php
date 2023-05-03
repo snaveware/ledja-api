@@ -17,7 +17,7 @@ class UserTypeController extends BaseController
      */
     public function index()
     {
-        $user_types = UserType::with('users')->paginate();
+        $user_types = UserType::with('users')->latest()->paginate();
         return $this->sendResponse($user_types, "User Types Fetched Successfully");
     }
 

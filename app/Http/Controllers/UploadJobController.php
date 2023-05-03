@@ -18,7 +18,7 @@ class UploadJobController extends BaseController
      */
     public function index()
     {
-        $upload_jobs = UploadJob::with(['user', 'other_documents'])->paginate();
+        $upload_jobs = UploadJob::with(['user', 'other_documents'])->latest()->paginate();
         return $this->sendResponse($upload_jobs, "JobSeekers Upload Jobs Fetched Successfully");
     }
 

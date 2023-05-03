@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\Models\User;
 use App\Models\Wallet;
+use App\Models\PasswordResetToken;
+use Illuminate\Support\Carbon;
+
 
 
 class RegisterController extends BaseController
@@ -18,6 +21,8 @@ class RegisterController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
+
+   
 
      public function index()
     {
@@ -212,16 +217,38 @@ class RegisterController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'password' => 'required',
+            'code' => 'required',
             'confirm_password' => 'required|same:password',
         ]);
+
+        $userPasswordReset = PasswordResetToken::where('email', $request->email)->latest()->first();
+        $createdAt = $userPasswordReset->created_at;
+        $token = $userPasswordReset->token;
+
+        if($createdAt < Carbon::now()->subMinutes(2)->toDateTimeString())
+        {
+            return $this->sendResponse([], "You only have 2 minutes to change your password,please start the process again..");
+        }
+
+        if($userPasswordReset == null)
+        {
+            return $this->sendResponse([], "Invalid Credentials!");
+        }
+
+        if($request->code != $userPasswordReset->code)
+        {
+            return $this->sendResponse([], "Invalid Credentials..");
+        }
    
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());       
         }
+
         $input = $request->only('password');
         $input['password'] = bcrypt($input['password']);
         $user = User::where('email', $request->email)->first();
         $user->update($input);
+
 
         return $this->sendResponse($user, "Password Reset Successfull" );
     }

@@ -17,7 +17,7 @@ class QuestionController extends BaseController
      */
     public function index()
     {
-        $questions = Question::with(['user','skills_assessment','answers','results'])->paginate();
+        $questions = Question::with(['user','skills_assessment','answers','results'])->latest()->paginate();
         return $this->sendResponse($questions, "Questions Fetched Successfully");
     }
 

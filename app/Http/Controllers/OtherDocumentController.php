@@ -18,7 +18,7 @@ class OtherDocumentController extends BaseController
      */
     public function index()
     {
-        $other_documents = OtherDocument::with(['user', 'upload'])->paginate();
+        $other_documents = OtherDocument::with(['user', 'upload'])->latest()->paginate();
         return $this->sendResponse($other_documents, "JobSeekers Other Documents Fetched Successfully");
     }
 

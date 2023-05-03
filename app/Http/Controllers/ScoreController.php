@@ -21,7 +21,7 @@ class ScoreController extends BaseController
      */
     public function index()
     {
-        $scores = Score::with(['user', 'skill_assessment'])->paginate();
+        $scores = Score::with(['user', 'skill_assessment'])->latest()->paginate();
         return $this->sendResponse($scores, "Scores Fetched Successfully");
     }
 
@@ -36,6 +36,7 @@ class ScoreController extends BaseController
             // check if user already has score
             $score = Score::with(['user', 'skills_assessment'])->where('user_id', $user_id)
             ->where('skills_assessment_id', $test_id)
+            ->latest()
             ->first();
 
             if(is_null($score))
@@ -116,7 +117,9 @@ class ScoreController extends BaseController
     {
         // Get all user ids
         // check if user has a score for that test
-        $score = Score::with(['user', 'skills_assessment'])->where('user_id', $user_id)->where('skills_assessment_id', $test_id)->first();
+        $score = Score::with(['user', 'skills_assessment'])->where('user_id', $user_id)->where('skills_assessment_id', $test_id)
+        ->latest()
+        ->first();
         // dd($score);
         // fetch score if user has score
 

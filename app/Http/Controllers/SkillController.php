@@ -17,7 +17,7 @@ class SkillController extends BaseController
      */
     public function index()
     {
-        $skills = Skill::with(['user'])->paginate();
+        $skills = Skill::with(['user'])->latest()->paginate();
         return $this->sendResponse($skills, "Skills Fetched Successfully");
     }
 

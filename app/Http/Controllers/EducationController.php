@@ -17,7 +17,7 @@ class EducationController extends BaseController
      */
     public function index()
     {
-        $education = Education::with(['user'])->paginate();
+        $education = Education::with(['user'])->latest()->paginate();
         return $this->sendResponse($education, "Educations Fetched Successfully");
     }
 

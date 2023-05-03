@@ -9,6 +9,7 @@
 <body>
    <p> Hi,it's time to reset your password :-) </p> 
    <p> Link: {{ $link }} </p>
+   <p> Your security code is {{ $code }} </p>
    <p> Ignore if this request is not from you. </p>
 </body>
 </html>

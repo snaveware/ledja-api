@@ -19,7 +19,7 @@ class BasicInfoRecruiterController extends BaseController
      */
     public function index()
     {
-        $basic_recruiters_info = BasicInfoRecruiter::with('user')->paginate();
+        $basic_recruiters_info = BasicInfoRecruiter::with('user')->latest()->paginate();
         return $this->sendResponse($basic_recruiters_info, "Basic Recruiter's Info Fetched Successfully");
     }
 
@@ -46,7 +46,6 @@ class BasicInfoRecruiterController extends BaseController
             'company_size' => 'required',
             'revenue' => 'required',
             'founded_on' => 'required',
-            'ceo' => 'required',
             'avatar' => 'nullable',
             'avatar_url' => 'nullable',
             'company_avatar' => 'nullable',

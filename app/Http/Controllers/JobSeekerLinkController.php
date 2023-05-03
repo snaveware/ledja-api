@@ -17,7 +17,7 @@ class JobSeekerLinkController extends BaseController
      */
     public function index()
     {
-        $job_seeker_links = JobSeekerLink::with('user')->paginate();
+        $job_seeker_links = JobSeekerLink::with('user')->latest()->paginate();
         return $this->sendResponse($job_seeker_links, "JobSeekers Links Fetched Successfully");
     }
 

@@ -17,7 +17,7 @@ class JobCategoryController extends BaseController
      */
     public function index()
     {
-        $job_categories = JobCategory::with('jobs')->paginate();
+        $job_categories = JobCategory::with('jobs')->latest()->paginate();
         return $this->sendResponse($job_categories, "Job Categories Fetched Successfully");
     }
 

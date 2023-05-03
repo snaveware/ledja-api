@@ -7,16 +7,26 @@ use Mail;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Mail\ResetPassword;
+use App\Models\User;
 
 class MailController extends Controller {
    public function store(Request $request)
    {
-      // Mail to user
-      Mail::to($request->email)->send(new ResetPassword($request));
+      // get user for that email if user exists
+      $user = User::where('email', $request->email)->first();
+      // get code
 
+
+      if($user != null)
+      {
+         // send email with otp
+         // Mail to user
+         Mail::to($request->email)->send(new ResetPassword($request));
+      }
+      
       return response()->json([
          'success' => true,
-         'data' => "Email sent successfully",
+         'data' => "An email has been sent to you if the email exists in our system",
          'status_code' => 200,
       ]);
    }

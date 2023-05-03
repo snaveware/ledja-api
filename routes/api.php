@@ -51,6 +51,10 @@ Route::controller(RegisterController::class)->group(function() {
 
 });
 
+/* WebHook for receiving payments */
+Route::post('/receive_payments', [PaymentController::class, 'receive_payments']);
+
+
 /* Make jobs accessible everywhere */
 Route::resource('jobs', JobController::class);
 Route::get('/get_user_jobs/{user_id}', [JobController::class, 'get_user_jobs']);
@@ -72,7 +76,6 @@ Route::post('send_reset_link', [PasswordResetLinkController::class, 'store']);
 Route::get('/payments/success', [PaymentController::class, 'success']);
 
 
-
 Route::middleware('auth:sanctum')->group( function () {
     Route::resource('user_types', UserTypeController::class);
     Route::post('/basic_infos/{id}', [BasicInfoJobseekerController::class, 'update']);
@@ -85,8 +88,8 @@ Route::middleware('auth:sanctum')->group( function () {
 
     // PAYMENT ENDPOINTS
     Route::post('send_sms', [PaymentController::class, 'intiate_payment']);
-    Route::post('/receive_payments', [PaymentController::class, 'receive_payments']);
     Route::post('/intiate_payment', [PaymentController::class, 'intiate_payment']);
+    Route::post('/create_payment', [PaymentController::class, 'create_payment']);
     Route::post('/authorize_payment', [PaymentController::class, 'authorize_charge']);
     Route::post('/verify_payment/{transaction_id}', [PaymentController::class, 'verify_payment']);
     Route::post('/mpesa_pay', [PaymentController::class, 'mpesa_pay']);

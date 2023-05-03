@@ -17,7 +17,7 @@ class JobTypeController extends BaseController
      */
     public function index()
     {
-        $job_types = JobType::with('jobs')->paginate();
+        $job_types = JobType::with('jobs')->latest()->paginate();
         return $this->sendResponse($job_types, "Job Types Fetched Successfully");
     }
 

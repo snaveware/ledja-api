@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
 use App\Notifications\PaymentIntiated;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -9,6 +10,7 @@ use Illuminate\Http\Response;
 use App\Models\Application;
 use App\Models\Message;
 use App\Models\Transaction;
+use App\Models\User;
 use Validator;
 use App\Http\Controllers\API\BaseController as BaseController;
 use GuzzleHttp\Client;
@@ -68,6 +70,7 @@ class PaymentController extends BaseController
 
         catch (\GuzzleHttp\Exception\ClientException $e)
         {
+            dd($e);
             return response()->json([
                 'success' => false,
                 'error' => 'Something went wrong!,please contact your bank for further details'
@@ -115,6 +118,115 @@ class PaymentController extends BaseController
 
         else
         {
+            // Return error message
+            return response()->json([
+                'data' => $data,
+                'status_code' => $response->getStatusCode()
+            ]); 
+        }
+        
+    }
+
+
+    public function create_payment(Request $request)
+    {
+        /* 
+        PAYLOAD
+           "card_number":"5531886652142950",
+            "cvv":"564",
+            "expiry_month":"09",
+            "expiry_year":"32",
+            "currency":"KES",
+            "amount":"100",
+            "fullname":"Talmon Mwakesi",
+            "phone_number": "254272136485",
+            "email":"talimwakesi@gmail.com",
+            "redirect_url":"https://b987-105-163-158-25.ngrok-free.app/api/receive_payments",
+
+            "authorization": {
+                "mode": "pin", 
+                "pin": "1234"
+            }
+        */
+        // $notifiable = new VonageMessage;
+        // $this->toVonage()->content('asfasfas');
+
+      
+  
+        $user = \Auth::user();
+        $payload = $request->all();
+
+        // Set new Transaction ref
+        $payload['tx_ref'] = 'LDJ-'.uniqid();
+        // dd($payload);
+        $response =  $this->charge_customer($payload, 'https://api.flutterwave.com/v3/payments' );
+        /* try {
+            $response =  $this->charge_customer($payload, 'https://api.flutterwave.com/v3/payments' );
+
+        }
+
+        catch (\GuzzleHttp\Exception\ClientException $e)
+        {
+            dd($e);
+            return response()->json([
+                'success' => false,
+                'error' => 'Something went wrong!,please contact your bank for further details'
+            ]);
+        } */
+
+        $data = json_decode($response->getBody()->getContents());
+
+        if($response->getStatusCode() == 429)
+        {
+            Log::info("*** RATE LIMIT EXCEEDED ***");
+            // Return success message
+            return response()->json([
+                'data' => 'Too many requests,try again after 5 minutes please.',
+                'status_code' => 429
+            ]); 
+        }
+
+        if($response->getStatusCode() == 200)
+        {
+            Log::info("*** TRANSACTION BEGINS ***");
+            // $wallet = $user->wallet;
+
+            // $pin = mt_rand(1111,9999);
+
+          /*   $transaction_payload = [
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'trx_ref' => $payload['tx_ref'],
+                'payment_mode' => $payload['payment_mode'],
+                // 'trx_otp' => $pin,
+                'mobile_no' => $payload['customer']['phonenumber'],
+                'trx_status' => 'pending authorization',
+            ]; */
+
+            // $user_transaction = Transaction::create($transaction_payload);
+
+         /*    if(!empty($user_transaction))
+            {
+                    $data->user_transaction = $user_transaction;
+                    // Add transaction to table
+                    // Send OTP to user and store it
+                    $message = "Your One Time Pin is {$pin}.Please do not share this with anyone.";
+                    // Notification::sendNow($user, new PaymentIntiated());
+                    $user_transaction->notify(new PaymentIntiated($user_transaction));
+
+            } */
+            
+            // Return success message
+            return response()->json([
+                'data' => $data,
+                'status_code' => 200
+            ]); 
+        }
+
+        else
+        {
+            Log::error("*** TRANSACTION ERROR ***");
+
             // Return error message
             return response()->json([
                 'data' => $data,
@@ -292,23 +404,77 @@ class PaymentController extends BaseController
                 }
             }
         }
-        
-        
-        
+          
         */
-
-
-
-
-
         // unpack the request via  a webhook
         // update wallet with the amount paid
-        echo "**** Inside webhook **** <br>";
+        $incoming_data = $request->all();
+        if($request->header('verif-hash') == env('SECRET_HASH'))
+        {
+            Log::info("HASH CHECK COMPLETE");
+            Log::info('***** INSIDE WEBHOOK *****');
+            Log::info('PAYLOAD INCOMING -->> ', [
+                'data' => $request->all()
+            ]);
+
+            $email = $incoming_data['data']['customer']['email'];
+            $status = $incoming_data['data']['status'];
+            $amount = $incoming_data['data']['amount'];
+            $mobile_no = $incoming_data['data']['customer']['phone_number'];
+            $tx_id = $incoming_data['data']['id'];
+            $tx_ref = $incoming_data['data']['tx_ref'];
+            $payment_mode = $incoming_data['data']['payment_type'];
+            $error_message = $incoming_data['data']['processor_response'];
+            $user = User::where('email', $email)->first();
+            $wallet = $user->wallet;
+
+
+            if($status == 'successful')
+            {
+                // Create Transaction
+                $transaction_payload = [
+                    'payment_mode' => $payment_mode,
+                    'user_id' => $user->id,
+                    'wallet_id' => $wallet->id,
+                    'trx_id' => $tx_id,
+                    'trx_ref' => $tx_ref,
+                    'mobile_no' => $mobile_no,
+                    'trx_status' => $status,
+                    'type' => 'credit',
+                    'amount' => $amount,
+                ];
+
+                $transaction = Transaction::create($transaction_payload);
+
+                // Verfiy the transaction
+                $data = $this->verify_payment($transaction->trx_id);
+
+                Log::info("*** SUCCESS *** ", [
+                    'data' => $data
+                ]);
+            }
+
+            if($status == 'failed')
+            {
+                Log::error('### PAYMENT ERROR ### ', ['error' => $error_message]);
+                return response()->json([
+                    'success' => false,
+                    'data' => [],
+                    'error' => $error_message,
+                ], 200);
+            }
+        }
+       
+        // echo "**** Inside webhook **** <br>";
         // print_r($request->all());
+        // $json_output = json_decode($request, true);
+        // echo "THE PAYLOAD IS --->> $json_output <br>";
+        // echo "VERIFYING TRANSACTION NOW.... <br>";
+        // $this->verify_payment($request->data->trx_ref);
 
 
         // add values to transaction table
-        $user = \Auth::user();
+        /* $user = \Auth::user();
         $wallet = $user->wallet;
         $webhook_data = $request->all();
         $trx_data = [
@@ -324,7 +490,11 @@ class PaymentController extends BaseController
 
         $transaction = Transaction::create($trx_data);
         $wallet->amount = $webhook_data->data->amount();
-        $wallet->save(); 
+        $wallet->save();  */
+
+        return response()->json([
+            'data' => $data
+        ]);
 
     }
 
@@ -333,6 +503,8 @@ class PaymentController extends BaseController
     {
         Flutterwave::bootstrap();
         $transactions = new \Flutterwave\Service\Transactions();
+        Log::info('*** NOW VERIFYING PAYMENT ');
+
         
         $response = $transactions->verify($transaction_id);
         // dd($response);
@@ -343,30 +515,60 @@ class PaymentController extends BaseController
             // Success! Confirm the customer's payment
             // Change status to successful in transaction
             $transaction = Transaction::where('trx_id', $transaction_id)->first();
+            // dd($transaction);
 
-            if($transaction->trx_status == 'successful')
+            if(!empty($transaction))
             {
+
+                if($transaction->trx_status == 'successful')
+                {
+                    Log::info("*** TRANSACTION WITH ID ${transaction_id} ALREADY EXISTS ***");
+                    return response()->json([
+                        'data' => 'Transaction has already been verified,please verify another transaction!',
+                        'status_code' => 200
+                    ]);
+                }
+                $transaction->trx_status = $response->data->status;
+                $transaction->amount = $response->data->amount;
+                $transaction->save();
+
+                // Add amount to wallet
+                $wallet = $transaction->wallet;
+                $wallet->amount += $response->data->amount_settled;
+                $wallet->save();
+
+                $transaction_amount = $transaction->amount;
+                $wallet_amount = $wallet->amount;
+
+                Log::info("*** TRANSACTION WITH ID ${transaction_id}  HAS BEEN VERIFIED ***");
+                Log::info("*** WALLET CREDITED WITH ${transaction_amount} *** ");
+                Log::info("*** NEW WALLET AMOUNT IS ${wallet_amount} *** ");
+
+
+                $response->wallet = $wallet;
+
+                Log::info('PAYLOAD RETURNED -->> ', [
+                    'data' => $response
+                ]);
+
                 return response()->json([
-                    'data' => 'Transaction has already been verified,please verify another transaction!',
+                    'data' => $response,
                     'status_code' => 200
                 ]);
+
             }
-            $transaction->trx_status = $response->data->status;
-            $transaction->amount = $response->data->amount;
-            $transaction->save();
 
-            // Add amount to wallet
-            $wallet = $transaction->wallet;
-            $wallet->amount += $response->data->amount_settled;
-            $wallet->save();
+            else
+            {
+                return response()->json([
+                    'success' => false,
+                    'data' => [],
+                    'message' => 'Transaction does not exist!'
+                ]);
 
-            $response->wallet = $wallet;
+            }
 
-            return response()->json([
-                'data' => $response,
-                'status_code' => 200
-            ]);
-
+            
         } 
         
         else {
@@ -409,7 +611,7 @@ class PaymentController extends BaseController
 
 
         // dd($payload);
-        $encrypted_payload = $this->encrypt($key, $payload);
+        // $encrypted_payload = $this->encrypt($key, $payload);
 
         // dd($request);
 
@@ -417,7 +619,8 @@ class PaymentController extends BaseController
        {
 
         $response = $client->request('POST', $base_uri, [
-            'json' => [ 'client' => $encrypted_payload]
+            // 'json' => [ 'client' => $payload]
+            'json' => $payload 
         ]);
 
        }

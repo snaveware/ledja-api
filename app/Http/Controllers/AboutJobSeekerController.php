@@ -17,7 +17,7 @@ class AboutJobSeekerController extends BaseController
      */
     public function index()
     {
-        $about_job_seekers = AboutJobSeeker::with('user')->paginate();
+        $about_job_seekers = AboutJobSeeker::with('user')->latest()->paginate();
         return $this->sendResponse($about_job_seekers, "About Job Seekers Fetched Successfully");
     }
 

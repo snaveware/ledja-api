@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Message;
@@ -10,6 +11,7 @@ use App\Models\Job;
 use App\Models\User;
 use Validator;
 use App\Http\Controllers\API\BaseController as BaseController;
+use App\Helpers\Utilities;
 
 
 class MessageController extends BaseController
@@ -39,13 +41,13 @@ class MessageController extends BaseController
         // Fetch latest message for user for that application
         if($is_jobseeker)
         {
-            $messages = Message::where('jobseeker_id', $user_id)->get();
+            $messages = Message::where('jobseeker_id', $user_id)->latest()->get();
             $unread = $messages->where('has_jobseeker_read', false)->count();
             $read = $messages->where('has_jobseeker_read', true)->count();
         }
 
         else{
-            $messages = Message::where('recruiter_id', $user_id)->get();
+            $messages = Message::where('recruiter_id', $user_id)->latest()->get();
             $unread = $messages->where('has_recruiter_read', false)->count();
             $read = $messages->where('has_recruiter_read', true)->count();
             
@@ -58,7 +60,9 @@ class MessageController extends BaseController
             {
                  // Get Application With Job
                 $application = Application::with(['user', 'job'])
-                ->where('user_id', $message->jobseeker_id)->first();
+                ->where('user_id', $message->jobseeker_id)
+                ->latest()
+                ->first();
 
                 $message->application = $application;
 
@@ -77,8 +81,12 @@ class MessageController extends BaseController
             "read_messages" => $read
         ];
 
+        $path = url('api/messages/user//');
+        $utility = new Utilities();
 
-        return $this->sendResponse($data ,"Messages Fetched Successfully");
+        $paginate = $utility->paginate($data, $user_id, $path);
+
+        return $this->sendResponse($paginate ,"Messages Fetched Successfully");
 
     }
 

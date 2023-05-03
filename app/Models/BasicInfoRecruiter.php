@@ -19,7 +19,6 @@ class BasicInfoRecruiter extends Model
         'company_size',
         'revenue',
         'founded_on',
-        'ceo',
         'avatar',
         'avatar_url',
         'company_avatar',

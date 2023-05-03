@@ -17,7 +17,7 @@ class RecruiterLinkController extends BaseController
      */
     public function index()
     {
-        $recruiter_links = RecruiterLink::with('user')->paginate();
+        $recruiter_links = RecruiterLink::with('user')->latest()->paginate();
         return $this->sendResponse($recruiter_links, "Recruiter Links Fetched Successfully");
     }
 

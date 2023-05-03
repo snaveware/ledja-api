@@ -4,6 +4,8 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Support\Facades\Log;
+
 
 class Handler extends ExceptionHandler
 {
@@ -42,12 +44,13 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->renderable(function (Throwable $e) {
-             
+
+                Log::error('ERROR ENCOUNTERED --> ', ['error' => $e]);
                 return response()->json([
                     'success' => false,
                     'data' => [],
                     'error' => $e->getMessage(),
                 ], 500);
-            });
+        });
     }
 }

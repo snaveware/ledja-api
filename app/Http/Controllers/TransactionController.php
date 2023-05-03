@@ -19,7 +19,7 @@ class TransactionController extends BaseController
      */
     public function index()
     {
-        $transactions = Transaction::with(['user', 'wallet'])->paginate();
+        $transactions = Transaction::with(['user', 'wallet'])->latest()->paginate();
         return $this->sendResponse($transactions, "Transactions Fetched Successfully");
     }
 
@@ -105,7 +105,7 @@ class TransactionController extends BaseController
 
     public function get_transaction(string $user_id)
     {
-        $transaction = Transaction::with(['user', 'wallet'])->where('user_id', $user_id)->get();
+        $transaction = Transaction::with(['user', 'wallet'])->where('user_id', $user_id)->latest()->paginate(30);
 
         return $this->sendResponse($transaction, "Transaction Found Successfully" );
 

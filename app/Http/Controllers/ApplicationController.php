@@ -22,7 +22,7 @@ class ApplicationController extends BaseController
      */
     public function index()
     {
-        $applications = Application::with(['job', 'user'])->paginate();
+        $applications = Application::with(['job', 'user'])->latest()->paginate();
         foreach($applications as $application)
         {
             $application->jobseeker_basic_info = $application->user->basic_info_jobseeker;
@@ -35,7 +35,7 @@ class ApplicationController extends BaseController
         $request->status = $request->status == null ? $request->merge(['status' => '']) :  $request->status;
         $input = $request->all();
         $applications = Application::
-        status($input['status'])->where('job_id', $job_id)->get();
+        status($input['status'])->where('job_id', $job_id)->latest()->paginate(30);
        
         $job_apps = [];
         $job_apps_with_names = [];
@@ -103,6 +103,7 @@ class ApplicationController extends BaseController
         $applications = Application::with(['job', 'user'])
         ->status($input['status'])
         ->where('user_id', $jobseeker_id)
+        ->latest()
         ->get();
 
         foreach($applications as $app)
@@ -219,11 +220,20 @@ class ApplicationController extends BaseController
         $message['application_id'] = $application->id; 
         $message['job_id'] = $application->job->id; 
         $message['status'] = $application->status;
-        $message['recruiter_message'] = "You have updated the status for the application to {$application->status}";
-        $message['jobseeker_message'] = $application->status == "shortlisted" ?
-        "You've been shortlisted, please check your email for next steps" :
-        "Your application status has been set to {$application->status} ";
 
+        if($message['status'] == 'review')
+        {
+            $message['jobseeker_message'] = "Your application is under review";
+        }
+
+        else 
+        {
+            $message['recruiter_message'] = "You have updated the status for the application to {$application->status}";
+            $message['jobseeker_message'] = $application->status == "shortlisted" ?
+            "You've been shortlisted, please check your email for next steps" :
+            "Your application status has been set to {$application->status} ";
+        }
+       
         $my_message = Message::create($message);
         $application->message = $my_message;
 
@@ -271,7 +281,7 @@ class ApplicationController extends BaseController
 
     public function get_active_applications(string $job_id)
     {
-        $active_applications = Application::where('job_id', $job_id)->get();
+        $active_applications = Application::where('job_id', $job_id)->latest()->get();
         $no_active_applications = $active_applications->count();
 
         $awaiting = Application::where('status', 'awaiting')->where('job_id', $job_id)->get();

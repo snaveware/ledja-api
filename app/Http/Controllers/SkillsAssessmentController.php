@@ -18,7 +18,7 @@ class SkillsAssessmentController   extends BaseController
      */
     public function index()
     {
-        $skill_assessments = SkillsAssessment::with(['user','jobs','questions','scores','results'])->paginate();
+        $skill_assessments = SkillsAssessment::with(['user','jobs','questions','scores','results'])->latest()->paginate();
         return $this->sendResponse($skill_assessments, "SkillAssessments Fetched Successfully");
     }
 
@@ -126,7 +126,9 @@ class SkillsAssessmentController   extends BaseController
         {
             // Get the assessment for the job_id
             $job = Job::with('skills_assessment')->findorFail($input['job_id']);
-            $assessment = SkillsAssessment::with(['user', 'jobs', 'questions', 'scores', 'results'])->findorFail($job->skills_assessment->id)->get();
+            $assessment = SkillsAssessment::with(['user', 'jobs', 'questions', 'scores', 'results'])->findorFail($job->skills_assessment->id)
+            ->latest()
+            ->get();
 
             return $this->sendResponse($assessment, "Assessments Fetched Successfully" );
         }
@@ -134,6 +136,7 @@ class SkillsAssessmentController   extends BaseController
 
         $assessments = SkillsAssessment::with('jobs')->userId($input['user_id'])
         ->title($input['title'])
+        ->latest()
         ->get();
       
         $filter_assessments = [];

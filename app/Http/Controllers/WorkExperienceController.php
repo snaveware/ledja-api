@@ -17,7 +17,7 @@ class WorkExperienceController extends BaseController
      */
     public function index()
     {
-        $work_experiences = WorkExperience::with(['user'])->paginate();
+        $work_experiences = WorkExperience::with(['user'])->latest()->paginate();
         return $this->sendResponse($work_experiences, "WorkExperiences Fetched Successfully");
     }
 

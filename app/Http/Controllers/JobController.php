@@ -19,7 +19,7 @@ class JobController extends BaseController
      */
     public function index()
     {
-        $jobs = Job::with(['user', 'skills_assessment', 'job_category', 'job_types'])->paginate();
+        $jobs = Job::with(['user', 'skills_assessment', 'job_category', 'job_types'])->latest()->paginate();
         foreach($jobs as $job)
         {
             // Get the recruiter basic info for each user
@@ -48,6 +48,7 @@ class JobController extends BaseController
             'user_id' => 'required',
             'skills_assessment_id' => 'nullable',
             'job_category_id' => 'required',
+            'category' => 'required',
             'job_status' => 'required',
             'company_industry' => 'required',
             'company_sub_industry' => 'required',
@@ -182,7 +183,7 @@ class JobController extends BaseController
     public function get_user_jobs(string $user_id)
     {
         //
-        $jobs = Job::with(['user','job_category','job_types'])->where('user_id', $user_id)->get();
+        $jobs = Job::with(['user','job_category','job_types'])->where('user_id', $user_id)->latest()->paginate(30);
 
         return $this->sendResponse($jobs, "User Jobs Found Successfully" );
 
@@ -223,10 +224,12 @@ class JobController extends BaseController
         ->JobTypes($input['job_types'])
         ->salary($input['salary'])
         ->title($input['title'])
-        ->title($input['location'])
+        ->location($input['location'])
         ->experienceLevel($input['experience_level'])
         ->datePosted($input['date_posted'])
-        ->get();
+        ->latest()
+        ->paginate(30);
+
       
         $filtered_jobs = [];
         foreach($jobs as $job)

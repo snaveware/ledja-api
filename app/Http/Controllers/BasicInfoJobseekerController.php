@@ -19,7 +19,7 @@ class BasicInfoJobseekerController extends BaseController
      */
     public function index()
     {
-        $basic_infos = BasicInfoJobSeeker::with('user')->paginate();
+        $basic_infos = BasicInfoJobSeeker::with('user')->latest()->paginate();
         return $this->sendResponse($basic_infos, "JobSeekers Basic Info Fetched Successfully");
     }
 

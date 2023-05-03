@@ -19,14 +19,17 @@ class ResultController extends BaseController
      */
     public function index()
     {
-        $results = Result::with(['user','skills_assessment','question'])->paginate();
+        $results = Result::with(['user','skills_assessment','question'])->latest()->paginate();
         return $this->sendResponse($results, "Results Fetched Successfully");
     }
 
     public function get_result($user_id, $test_id)
     {
         // get the test in question from the jobseeker's result
-        $result = Result::with(['skills_assessment', 'user'])->where('user_id', $user_id)->where('skills_assessment_id', $test_id)->get();
+        $result = Result::with(['skills_assessment', 'user'])->where('user_id', $user_id)->where('skills_assessment_id', $test_id)
+        ->latest()
+        ->get();
+        
         return $this->sendResponse($result, "Results for user fetched successfully" );
 
     }

@@ -17,7 +17,7 @@ class MoreAboutRecruiterController extends BaseController
      */
     public function index()
     {
-        $recruiter_links = MoreAboutRecruiter::with('user')->paginate();
+        $recruiter_links = MoreAboutRecruiter::with('user')->latest()->paginate();
         return $this->sendResponse($recruiter_links, "Recruiter Links Fetched Successfully");
     }
 
