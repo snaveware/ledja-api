@@ -242,7 +242,7 @@ class ApplicationController extends BaseController
             array_push($email_data, ['job' => $job]);
 
             // send email
-            Mail::to('talimwakesi@gmail.com')->send(new Shortlisted($email_data));
+            Mail::to($user->email)->send(new Shortlisted($email_data));
             $message['recruiter_message'] = "You have updated the status for the application to {$application->status}";
 
         }
