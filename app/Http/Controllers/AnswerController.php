@@ -17,7 +17,7 @@ class AnswerController extends BaseController
      */
     public function index()
     {
-        $answers = Answer::with(['user','question'])->latest()->paginate(30);
+        $answers = Answer::with(['user','question'])->latest()->paginate(15);
         return $this->sendResponse($answers, "Answers Fetched Successfully");
     }
 

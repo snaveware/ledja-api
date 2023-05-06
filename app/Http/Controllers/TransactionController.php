@@ -105,7 +105,7 @@ class TransactionController extends BaseController
 
     public function get_transaction(string $user_id)
     {
-        $transaction = Transaction::with(['user', 'wallet'])->where('user_id', $user_id)->latest()->paginate(30);
+        $transaction = Transaction::with(['user', 'wallet'])->where('user_id', $user_id)->latest()->paginate(15);
 
         return $this->sendResponse($transaction, "Transaction Found Successfully" );
 

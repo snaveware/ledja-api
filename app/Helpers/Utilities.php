@@ -10,7 +10,7 @@ class Utilities {
     public function paginate(Array $data, string $id = "/", string $path)
     {
         $page = 1;
-        $per_page = 30;
+        $per_page = 15;
         $collection = collect($data);
 
         $result = new LengthAwarePaginator(

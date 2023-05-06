@@ -16,6 +16,7 @@ use Validator;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Mail\Shortlisted;
 use Mail;
+use App\Helpers\Utilities;
 
 
 class ApplicationController extends BaseController
@@ -38,7 +39,7 @@ class ApplicationController extends BaseController
         $request->status = $request->status == null ? $request->merge(['status' => '']) :  $request->status;
         $input = $request->all();
         $applications = Application::
-        status($input['status'])->where('job_id', $job_id)->latest()->paginate(30);
+        status($input['status'])->where('job_id', $job_id)->latest()->paginate(15);
        
         $job_apps = [];
         $job_apps_with_names = [];
@@ -57,14 +58,14 @@ class ApplicationController extends BaseController
             // Check if there is a fname and lname filter
             if ($request->name != null)
             {
-                
-                if(str_contains($application->user->basic_info_jobseeker->fname, $request->name )  )
+                $string = ucfirst($request->name);
+                if(str_contains($application->user->basic_info_jobseeker->fname, $string )  )
                 {
                     $application->jobseeker_basic_info = $application->user->basic_info_jobseeker;
                     array_push($job_apps_with_names, $application);
                 }
 
-                else if(str_contains($application->user->basic_info_jobseeker->lname, $request->name )  )
+                else if(str_contains($application->user->basic_info_jobseeker->lname, $string )  )
                 {
                     $application->jobseeker_basic_info = $application->user->basic_info_jobseeker;
                     array_push($job_apps_with_names, $application);
@@ -77,11 +78,15 @@ class ApplicationController extends BaseController
             }
            
         }
-
         if ($request->name != null)
         {
             $job_apps = $job_apps_with_names;
-            return $this->sendResponse($job_apps, "Recruiter Applications Fetched");
+            $path = url('api/applications/job/');
+            $utility = new Utilities();
+    
+            $paginate = $utility->paginate($job_apps, $job_id, $path);
+
+            return $this->sendResponse($paginate, "Recruiter Applications Fetched");
         }
 
 
@@ -107,7 +112,7 @@ class ApplicationController extends BaseController
         ->status($input['status'])
         ->where('user_id', $jobseeker_id)
         ->latest()
-        ->get();
+        ->paginate(15);
 
         foreach($applications as $app)
         {
@@ -258,10 +263,13 @@ class ApplicationController extends BaseController
 
         // for this application,get the job,get the skills assessment then you cna get the score
         $job = $application->job;
-        $skills_test = $job->skills_assessment;
-        $scores = $skills_test->scores;
 
-        $application->scores = $scores;
+        if($job->skills_assessment != null)
+        {
+            $skills_test = $job->skills_assessment;
+            $scores = $skills_test->scores;
+            $application->scores = $scores;
+        }
         
 
         return $this->sendResponse($application, $response );

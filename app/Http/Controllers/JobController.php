@@ -178,7 +178,7 @@ class JobController extends BaseController
     public function get_user_jobs(string $user_id)
     {
         //
-        $jobs = Job::with(['user','company','job_category','job_types'])->where('user_id', $user_id)->latest()->paginate(30);
+        $jobs = Job::with(['user','company','job_category','job_types'])->where('user_id', $user_id)->latest()->paginate(15);
 
         return $this->sendResponse($jobs, "User Jobs Found Successfully" );
 
@@ -223,7 +223,7 @@ class JobController extends BaseController
         ->experienceLevel($input['experience_level'])
         ->datePosted($input['date_posted'])
         ->latest()
-        ->paginate(30);
+        ->paginate(15);
 
       
         $filtered_jobs = [];
