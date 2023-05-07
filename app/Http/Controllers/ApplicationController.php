@@ -59,25 +59,36 @@ class ApplicationController extends BaseController
             if ($request->name != null)
             {
                 $string = ucfirst($request->name);
-                if(str_contains($application->user->basic_info_jobseeker->fname, $string )  )
-                {
-                    $application->jobseeker_basic_info = $application->user->basic_info_jobseeker;
-                    array_push($job_apps_with_names, $application);
-                }
 
-                else if(str_contains($application->user->basic_info_jobseeker->lname, $string )  )
+                if($application->user->basic_info_jobseeker != null)
                 {
-                    $application->jobseeker_basic_info = $application->user->basic_info_jobseeker;
-                    array_push($job_apps_with_names, $application);
+                    if(str_contains($application->user->basic_info_jobseeker->fname, $string )  )
+                    {
+                        $application->jobseeker_basic_info = $application->user->basic_info_jobseeker;
+                        array_push($job_apps_with_names, $application);
+                    }
+    
+                    else if(str_contains($application->user->basic_info_jobseeker->lname, $string )  )
+                    {
+                        $application->jobseeker_basic_info = $application->user->basic_info_jobseeker;
+                        array_push($job_apps_with_names, $application);
+                    }
+    
+                    else
+                    {
+                        continue;
+                    }  
                 }
 
                 else
                 {
                     continue;
                 }
+
             }
            
         }
+
         if ($request->name != null)
         {
             $job_apps = $job_apps_with_names;
