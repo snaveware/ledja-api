@@ -24,7 +24,7 @@ class MessageController extends BaseController
         //Get all messages
     }
 
-    public function get_user_message(string $user_id)
+    public function get_user_message(Request $request, string $user_id)
     {
         // Get user 
         $user = User::findorFail($user_id);
@@ -70,6 +70,7 @@ class MessageController extends BaseController
            
         }
 
+        $user_messages = [$messages];
         // dd(gettype($messages));
         // $messages["unread_messages"] = $unread;
         // $messages["read_messages"] = $read;
@@ -84,7 +85,11 @@ class MessageController extends BaseController
         $path = url('api/messages/user//');
         $utility = new Utilities();
 
-        $paginate = $utility->paginate($data, $user_id, $path);
+        $page = $request->page;
+
+        $paginate = $utility->paginate($user_messages, $user_id, $path, $page);
+        $paginate->push('unread', $unread);
+        $paginate->push('read', $read);
 
         return $this->sendResponse($paginate ,"Messages Fetched Successfully");
 

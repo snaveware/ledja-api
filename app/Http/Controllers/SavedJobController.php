@@ -160,7 +160,7 @@ class SavedJobController extends BaseController
      /**
      * Display the specified resource.
      */
-    public function get_user_saved_jobs(string $user_id)
+    public function get_user_saved_jobs(Request $request, string $user_id)
     {
         $user_saved_jobs = User::findorFail($user_id)->saved_jobs()->latest()->get();
         // return $this->sendResponse($user_saved_jobs, "Saved User Jobs Found Successfully" );
@@ -197,8 +197,9 @@ class SavedJobController extends BaseController
         // $user_saved_jobs->jobs_saved = $jobs_saved;
 
         $utility = new Utilities();
+        $page = $request->page;
         $path = url('api/get_user_saved_jobs/user');
-        $paginate = $utility->paginate($jobs_saved, $user_id, $path);
+        $paginate = $utility->paginate($jobs_saved, $user_id, $path, $page);
 
         return $this->sendResponse($paginate, "Saved User Jobs Found Successfully" );
 

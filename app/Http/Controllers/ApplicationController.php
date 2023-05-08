@@ -94,8 +94,10 @@ class ApplicationController extends BaseController
             $job_apps = $job_apps_with_names;
             $path = url('api/applications/job/');
             $utility = new Utilities();
+            $page = $request->page;
     
-            $paginate = $utility->paginate($job_apps, $job_id, $path);
+            $paginate = $utility->paginate($job_apps, $job_id, $path, $page);
+            
 
             return $this->sendResponse($paginate, "Recruiter Applications Fetched");
         }
