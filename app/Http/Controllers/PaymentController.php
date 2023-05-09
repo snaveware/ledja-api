@@ -252,8 +252,8 @@ class PaymentController extends BaseController
             // Return error message
             return response()->json([
                 'data' => 'Invalid Credentials!',
-                'status_code' => 200
-            ]); 
+                'status_code' => 403
+            ], 403); 
         }
         // Set new Transaction ref
         $payload['tx_ref'] = $transaction->trx_ref;

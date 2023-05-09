@@ -64,9 +64,11 @@ Route::post('/filter_jobs', [JobController::class, 'filter_jobs']);
 /* Make jobs accessible everywhere */
 Route::get('/users', [RegisterController::class, 'index']);
 Route::get('/users/{id}', [RegisterController::class, 'show']);
-Route::post('reset_password', [RegisterController::class, 'reset_password']);
 
+/* Password Reset Links */
+Route::post('reset_password', [RegisterController::class, 'reset_password']);
 Route::post('send_password_reset_mail',[MailController::class, 'store']);
+
 Route::get('sendbasicemail',[MailController::class, 'basic_email']);
 Route::get('sendhtmlemail',[MailController::class, 'html_email']);
 Route::get('sendattachmentemail',[MailController::class, 'attachment_email']);

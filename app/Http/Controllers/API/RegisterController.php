@@ -232,12 +232,22 @@ class RegisterController extends BaseController
 
         if($userPasswordReset == null)
         {
-            return $this->sendResponse([], "Invalid Credentials!");
+            return response()->json([
+                "success" => false,
+                "data" => [],
+                "message" => "Invalid Credentials",
+
+            ], 403);
         }
 
         if($request->code != $userPasswordReset->code)
         {
-            return $this->sendResponse([], "Invalid Credentials..");
+            return response()->json([
+                "success" => false,
+                "data" => [],
+                "message" => "Invalid Credentials",
+
+            ], 403);
         }
    
         if($validator->fails()){
