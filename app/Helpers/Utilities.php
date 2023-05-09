@@ -7,7 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class Utilities {
 
-    public function paginate(Array $data, string $id = "/", string $path, int $page)
+    public function paginate(Array $data, string $id = "/", string $path, int $page = 1)
     {
         $per_page = 3;
         $collection = collect($data);
