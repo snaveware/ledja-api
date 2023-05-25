@@ -45,6 +45,12 @@ class SavedJobController extends BaseController
         // Check if user has saved this job
         $is_job_saved = false;
         $user = User::findorFail($user_id);
+        if(is_null($user))
+        {
+            return response()->json([
+                "User does not exist"
+            ], 404);
+        }
         $user_saved_jobs = $user->saved_jobs;
 
         // dd($user_saved_jobs);
@@ -162,7 +168,22 @@ class SavedJobController extends BaseController
      */
     public function get_user_saved_jobs(Request $request, string $user_id)
     {
-        $user_saved_jobs = User::findorFail($user_id)->saved_jobs()->latest()->get();
+        if(is_null($request->page))
+        {
+            return response()->json([
+                "Please make sure to include page number"
+            ], 400);
+        }
+        $user = User::find($user_id);
+        if(is_null($user))
+        {
+            return response()->json([
+                "User with id $user_id does not exist"
+            ], 404);
+        }
+        $user_saved_jobs = $user->saved_jobs()->latest()->get();
+        // $user = User::findorFail($user_id);
+       
         // return $this->sendResponse($user_saved_jobs, "Saved User Jobs Found Successfully" );
 
         $jobs_saved = [];
@@ -195,6 +216,7 @@ class SavedJobController extends BaseController
         // return $this->sendResponse($jobs_saved, "Saving Job..." );
 
         // $user_saved_jobs->jobs_saved = $jobs_saved;
+
 
         $utility = new Utilities();
         $page = $request->page;

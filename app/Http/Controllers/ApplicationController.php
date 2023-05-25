@@ -86,6 +86,12 @@ class ApplicationController extends BaseController
                 }
 
             }
+
+            else
+            {
+                $application->jobseeker_basic_info = $application->user->basic_info_jobseeker;
+
+            }
            
         }
 
@@ -96,8 +102,7 @@ class ApplicationController extends BaseController
             $utility = new Utilities();
             $page = $request->page;
     
-            $paginate = $utility->paginate($job_apps, $job_id, $path, $page);
-            
+            $paginate = $utility->paginate($job_apps, $job_id, $path, $page);            
 
             return $this->sendResponse($paginate, "Recruiter Applications Fetched");
         }
@@ -105,15 +110,23 @@ class ApplicationController extends BaseController
 
         if(count($job_apps) == 0)
         {
-            $job_apps = $applications;
             foreach($applications as $application)
             {
                 $application->jobseeker_basic_info = $application->user->basic_info_jobseeker;
+                array_push($job_apps, $application);
 
             }
+            $path = url('api/applications/job/');
+            $utility = new Utilities();
+            $page = $request->page;
+    
+            $paginate = $utility->paginate($job_apps, $job_id, $path, $page);
+
+
+
         }
 
-        return $this->sendResponse($job_apps, "Recruiter Applications Fetched");
+        return $this->sendResponse($paginate, "Recruiter Applications Fetched");
 
     }
 

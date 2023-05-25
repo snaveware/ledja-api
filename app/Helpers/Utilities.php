@@ -13,8 +13,8 @@ class Utilities {
         $collection = collect($data);
 
         $result = new LengthAwarePaginator(
-            $collection[0]->forPage($page, $per_page),
-            $collection[0]->count(),
+            $collection->forPage($page, $per_page),
+            $collection->count(),
             $per_page,
             $page,
             ['path' => url($path.'/'.$id)]
