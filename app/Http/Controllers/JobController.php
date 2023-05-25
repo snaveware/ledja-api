@@ -6,6 +6,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Job;
+use App\Models\User;
 use App\Models\JobCategory;
 use App\Models\Wallet;
 use Validator;
@@ -49,6 +50,7 @@ class JobController extends BaseController
             'skills_assessment_id' => 'nullable',
             'job_category_id' => 'required',
             'company_id' => 'nullable',
+            'hiring_company' => 'nullable',
             'category' => 'required',
             'job_status' => 'required',
             'company_industry' => 'required',
@@ -85,15 +87,25 @@ class JobController extends BaseController
         // Get job category
         $job_category = JobCategory::find($input['job_category_id']);
         $wallet = Wallet::where('user_id', $input['user_id'])->first();
-        if ($wallet->amount < $job_category->cost)
-        {
-            // Inform user if recruiter doesn't have the funds
-            return $this->sendResponse([], "Not enough funds,you have Kshs. {$wallet->amount} in your wallet,the job costs Kshs {$job_category->cost}, please top up to continue" );
 
+        // Check if recruiter is our admin,if so allow to post job
+        $user = User::findOrFail($input['user_id']);
+        if (!is_null($user))
+        {
+            if($user->email != 'info@ledja.net')
+            {
+                if ($wallet->amount < $job_category->cost)
+                {
+                    // Inform user if recruiter doesn't have the funds
+                    return $this->sendResponse([], "Not enough funds,you have Kshs. {$wallet->amount} in your wallet,the job costs Kshs {$job_category->cost}, please top up to continue" );
+
+                }
+            
+                $wallet->amount = $wallet->amount - $job_category->cost;
+                $wallet->save();
+            }
         }
-       
-        $wallet->amount = $wallet->amount - $job_category->cost;
-        $wallet->save();
+
         $job = Job::create($input);
         $job_type_ids = explode(",", $input['job_type_ids']);
         foreach($job_type_ids as  $key => $value )
@@ -112,7 +124,7 @@ class JobController extends BaseController
     public function show(string $id)
     {
         //
-        $job = Job::with(['user', 'company', 'job_category', 'job_types'])->find($id);
+        $job = Job::with(['user', 'company', 'job_category', 'job_types', 'skills_assessment'])->find($id);
         $job->recruiter_basic_info = $job->user->basic_info_recruiter;
         $job->more_about_recruiter = $job->user->more_about_recruiter;
 

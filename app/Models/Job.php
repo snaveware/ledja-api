@@ -91,6 +91,7 @@ class Job extends Model
         'skills_assessment_id',
         'job_category_id',
         'company_id',
+        'hiring_company',
         'job_status',
         'category',
         'company_industry',

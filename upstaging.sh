@@ -1,1 +1,1 @@
-docker compose up
+docker compose up --build --remove-orphans -d
