@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('company_sub_industry')->nullable()->change();
             $table->string('title')->nullable()->change();
             $table->string('location')->nullable()->change();
-            $table->string('description')->nullable()->change();
             $table->integer('no_of_hires')->nullable()->change();
             $table->string('hiring_speed')->nullable()->change();
             $table->boolean('own_completion')->nullable()->change();
