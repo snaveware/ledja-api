@@ -92,7 +92,7 @@ class JobController extends BaseController
         $user = User::findOrFail($input['user_id']);
         if (!is_null($user))
         {
-            if($user->email != 'info@ledja.net')
+            if($user->email != 'info@ledja.net' || $user->email != 'ewak222@yahoo.com')
             {
                 if ($wallet->amount < $job_category->cost)
                 {
