@@ -109,11 +109,20 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
         DB::table('job_types')->updateOrInsert([
             'title' => 'Seasonal',
             'description' => 'Seasonal job.',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        DB::table('job_types')->updateOrInsert([
+            'title' => 'link-out',
+            'description' => 'No email communication',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+       
     }
 }

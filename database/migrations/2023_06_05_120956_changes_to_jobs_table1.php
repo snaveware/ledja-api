@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('jobs', function (Blueprint $table) {
-            // $table->unsignedBigInteger('company_id')->nullable()->after('job_category_id');
-            // $table->foreign('company_id')->references('id')->on('companies');
+            $table->longText('responsibilites')->nullable();
+            $table->longText('requirements')->nullable();
+
         });
     }
 

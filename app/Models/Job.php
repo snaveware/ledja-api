@@ -109,6 +109,8 @@ class Job extends Model
         'communication_preferences',
         'apply_method',
         'send_to_email',
+        'requirements',
+        'responsibilites',
     ];
 
     public function user(): BelongsTo

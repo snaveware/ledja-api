@@ -54,7 +54,7 @@ class JobController extends BaseController
             'category' => 'required',
             'job_status' => 'required',
             'company_industry' => 'required',
-            'company_sub_industry' => 'required',
+            // 'company_sub_industry' => 'required',
             'title' => 'required',
             'location' => 'required',
             'description' => 'required',
@@ -69,7 +69,8 @@ class JobController extends BaseController
             'apply_method' => 'required',
             'send_to_email' => 'required',
             'job_type_ids' => 'required',
-            // 'skills_assessment' => 'nullable',
+            // 'requirements' => 'required',
+            // 'responsibilities' => 'required',
         ]);
 
         if($validator->fails()){
@@ -92,7 +93,12 @@ class JobController extends BaseController
         $user = User::findOrFail($input['user_id']);
         if (!is_null($user))
         {
-            if($user->email != 'info@ledja.net' || $user->email != 'ewak222@yahoo.com')
+            if($user->email == 'info@ledja.net' || $user->email == 'ewak222@yahoo.com')
+            {
+                // pass
+            }
+
+            else
             {
                 if ($wallet->amount < $job_category->cost)
                 {
