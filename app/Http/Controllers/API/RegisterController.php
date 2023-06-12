@@ -122,10 +122,6 @@ class RegisterController extends BaseController
             $success['user'] =  $user;
             // $success['user_type'] =  $user->user_type;
 
-            xt field called "responsibilities" and another  called "requirements" (remember to make sure they accepts about 1000 words)
-            Remove sub industry in job
-            Seed "link-out" together with other job categories
-            Account verification functionality
             return $this->sendResponse($success, 'User login successfull.');
         } 
         else{ 
