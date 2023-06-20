@@ -11,8 +11,9 @@ use App\Models\User;
 use App\Models\Wallet;
 use App\Models\PasswordResetToken;
 use Illuminate\Support\Carbon;
-
-
+use Mail;
+use App\Mail\SendVerificationCode;
+use Illuminate\Auth\Events\Registered;
 
 class RegisterController extends BaseController
 {
@@ -67,6 +68,7 @@ class RegisterController extends BaseController
         $user->basic_info_jobseeker;
         $user->basic_info_recruiter;
         $success['user'] =  $user;
+        $user->sendEmailVerificationNotification();
 
         // create user wallet
         if ($user->user_type->name == "recruiter")
@@ -81,7 +83,14 @@ class RegisterController extends BaseController
             $success['wallet'] = $wallet;
        
         }
-        
+
+        // event(new Registered($user));
+
+
+
+        // Send verfification details
+        // Mail::to($user->email)->send(new SendVerificationCode());
+
         return $this->sendResponse($success, 'User registered successfully.');
     }
    
@@ -93,7 +102,15 @@ class RegisterController extends BaseController
     public function login(Request $request)
     {
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
+            if (! auth()->user()->hasVerifiedEmail()) {
+                return response()->json(["msg" => "Email not verified."], 400);
+            }
+            
             $user = Auth::user(); 
+            /* if (is_null($user->email_verified_at))
+            {
+                return $this->sendError('Email not verified.Verify to continue.', ['error'=>'Verification needed.']);
+            } */
             $success['token'] =  $user->createToken('MyApp')->plainTextToken; 
             $success['email'] =  $user->email;
             // 'job_seeker_link',
@@ -122,11 +139,26 @@ class RegisterController extends BaseController
             $success['user'] =  $user;
             // $success['user_type'] =  $user->user_type;
 
+
+
             return $this->sendResponse($success, 'User login successfull.');
         } 
         else{ 
             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
         } 
+    }
+
+
+    public function verify_email(string $some_uuid)
+    {
+        // dd($some_uuid);
+        $user = \Auth::user();
+        $user->email_verified_at = now();
+        $user->save();
+        $success['user'] = $user; 
+
+        return $this->sendResponse($success, 'User verification successfull.');
+
     }
 
      /**

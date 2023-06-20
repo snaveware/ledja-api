@@ -33,6 +33,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SavedJobController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\VerificationController;
 
 
 /*
@@ -45,6 +46,8 @@ use App\Http\Controllers\CompanyController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+
 
 Route::controller(RegisterController::class)->group(function() {
     Route::post('register', 'register');
@@ -78,8 +81,15 @@ Route::post('send_reset_link', [PasswordResetLinkController::class, 'store']);
 
 Route::get('/payments/success', [PaymentController::class, 'success']);
 
+Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify'); 
 
-Route::middleware('auth:sanctum')->group( function () {
+Route::get('email/resend', [VerificationController::class,'resend'])->name('verification.resend')->middleware('auth:sanctum');
+
+
+
+Route::middleware(['auth:sanctum'])->group( function () {
+
+
     Route::resource('user_types', UserTypeController::class);
     Route::post('/basic_infos/{id}', [BasicInfoJobseekerController::class, 'update']);
     Route::post('/recruiter_basic_infos/{id}', [BasicInfoRecruiterController::class, 'update']);
@@ -88,6 +98,8 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('/upload_jobs/{id}', [UploadJobController::class, 'update']);
     Route::post('/saved_jobs/user/{user_id}/job/{job_id}', [SavedJobController::class, 'store']);
     Route::get('/get_user_saved_jobs/user/{user_id}', [SavedJobController::class, 'get_user_saved_jobs']);
+
+    Route::get('/verify/{some_uuid}', [RegisterController::class, 'verify_email']);
 
     // PAYMENT ENDPOINTS
     Route::post('send_sms', [PaymentController::class, 'intiate_payment']);

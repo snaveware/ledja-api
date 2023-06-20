@@ -275,7 +275,6 @@ class ApplicationController extends BaseController
             // send email
             Mail::to($user->email)->send(new Shortlisted($email_data));
             $message['recruiter_message'] = "You have updated the status for the application to {$application->status}";
-
         }
 
         else 
