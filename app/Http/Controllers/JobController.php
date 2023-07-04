@@ -56,6 +56,7 @@ class JobController extends BaseController
             'company_industry' => 'required',
             // 'company_sub_industry' => 'required',
             'title' => 'required',
+            'application_link' => 'nullable',
             'location' => 'required',
             'description' => 'required',
             'salary' => 'nullable',

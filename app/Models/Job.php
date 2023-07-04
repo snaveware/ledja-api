@@ -97,6 +97,7 @@ class Job extends Model
         'company_industry',
         'company_sub_industry',
         'title',
+        'application_link',
         'location',
         'description',
         'salary',

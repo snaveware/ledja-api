@@ -30,24 +30,32 @@ class DatabaseSeeder extends Seeder
 
         DB::table('job_categories')->updateOrInsert([
                 'type' => 'basic',
-                'description' => 'Access to non-assessed list of applicants to interview',
-                'cost' => 5000,
+                'description' => 'Entry level,volunteer,internship roles.',
+                'cost' => 2500,
                 'created_at' => now(),
                 'updated_at' => now(),
         ]);
 
         DB::table('job_categories')->updateOrInsert([
                 'type' => 'standard',
-                'description' => 'Access to shortlist of applicants to interview',
-                'cost' => 11000,
+                'description' => 'Highlighted relevant candidates, Embedded Skills Assessment Faster, more accurate shortlisting',
+                'cost' => 5000,
                 'created_at' => now(),
                 'updated_at' => now(),
         ]);
 
         DB::table('job_categories')->updateOrInsert([
                 'type' => 'premium',
-                'description' => 'Curated list of 10 selected candidates to interview',
-                'cost' => 20000,
+                'description' => 'HR experts screen & interview,High-quality profiles delivered in 5 days,Dedicated HR expert support',
+                'cost' => 11000,
+                'created_at' => now(),
+                'updated_at' => now(),
+        ]);
+
+        DB::table('job_categories')->updateOrInsert([
+                'type' => 'link_out',
+                'description' => 'Redirect applicants from our platform to yours, easily Increase your brand visibility with job seekers,Receive referral traffic from a trusted website,No integration required, easy one-click linkout',
+                'cost' => 5000,
                 'created_at' => now(),
                 'updated_at' => now(),
         ]);
@@ -113,13 +121,6 @@ class DatabaseSeeder extends Seeder
         DB::table('job_types')->updateOrInsert([
             'title' => 'Seasonal',
             'description' => 'Seasonal job.',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        DB::table('job_types')->updateOrInsert([
-            'title' => 'link-out',
-            'description' => 'No email communication',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
