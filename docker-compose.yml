@@ -82,7 +82,7 @@ services:
         - "/etc/letsencrypt/live/direktory.biz/privkey.pem:/certs/frontend/privkey.pem"
 
 
-        - "/srv/ledja/configuration:/configuration/"
+        - "/home/talimwakesi/srv/ledja/configuration:/configuration/"
 
 volumes:
     dbdata:
