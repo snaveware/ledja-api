@@ -92,11 +92,45 @@ class JobController extends BaseController
 
         // Check if recruiter is our admin,if so allow to post job
         $user = User::findOrFail($input['user_id']);
+
+        // Pay for posting the job.
         if (!is_null($user))
         {
-            if($user->email == 'info@ledja.net' || $user->email == 'ewak222@yahoo.com')
+            /* 
+            || Emails to blacklist ||
+            *** From Ledja ***
+
+            info@ledja.net,
+            tysoreg1@gmail.com,
+            tysoreg.1@gmail.com,
+            tysoronnie.o@gmail.com,
+            tyso.ronnie.o@gmail.com,
+            Ledjalimited@gmail.com,
+
+
+            *** From Me ***
+
+            talimwakesi@gmail.com,
+            cmaina413@gmail.com,
+            
+            */
+
+            $whitelist = [
+                "info@ledja.net",
+                "tysoreg1@gmail.com",
+                "tysoreg.1@gmail.com",
+                "tysoronnie.o@gmail.com",
+                "tyso.ronnie.o@gmail.com",
+                "Ledjalimited@gmail.com",
+                "ewak222@yahoo.com",
+                "talimwakesi@gmail.com",
+                "cmaina413@gmail.com",
+            ];
+
+            // if($user->email == 'info@ledja.net' || $user->email == 'ewak222@yahoo.com')
+            if( in_array($user->email, $whitelist) )
             {
-                // pass
+                // Allow users to post jobs without money in the wallet.
             }
 
             else
@@ -119,6 +153,7 @@ class JobController extends BaseController
         {
             $job->job_types()->attach($value);
         }
+
         $job->job_types;
 
         return $this->sendResponse($job, "Jobs Created Successfully" );
