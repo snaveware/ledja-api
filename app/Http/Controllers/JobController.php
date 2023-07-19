@@ -131,6 +131,8 @@ class JobController extends BaseController
             if( in_array($user->email, $whitelist) )
             {
                 // Allow users to post jobs without money in the wallet.
+                // Credit them with 2 million for testing
+                $wallet->amount = 2000000;
             }
 
             else
