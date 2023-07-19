@@ -5,7 +5,7 @@ services:
             context: .
             dockerfile: Dockerfile
         container_name: backend_service
-        command: /bin/sh -c 'php artisan migrate && php artisan storage:link && php artisan serve && php artisan config:cache && php artisan route:cache --host=0.0.0.0'
+        command: /bin/sh -c 'php artisan migrate && php artisan storage:link && php artisan serve  --host=0.0.0.0'
         volumes:
             - .:/ledja
         ports:
