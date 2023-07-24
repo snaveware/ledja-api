@@ -122,6 +122,7 @@ class JobController extends BaseController
                 "tysoronnie.o@gmail.com",
                 "tyso.ronnie.o@gmail.com",
                 "Ledjalimited@gmail.com",
+                "ledjalimited@gmail.com",
                 "ewak222@yahoo.com",
                 "talimwakesi@gmail.com",
                 "cmaina413@gmail.com",
