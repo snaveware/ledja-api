@@ -288,7 +288,10 @@ class RegisterController extends BaseController
         $input = $request->only('password');
         $input['password'] = bcrypt($input['password']);
         $user = User::where('email', $request->email)->first();
-        $user->update($input);
+        $user->email_verified_at = now();
+        // $user->update($input);
+        $user->password = $input['password'];
+        $user->save();
 
 
         return $this->sendResponse($user, "Password Reset Successfull" );
